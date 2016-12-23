@@ -1,0 +1,2 @@
+# mancala
+Simulator for Mancala
