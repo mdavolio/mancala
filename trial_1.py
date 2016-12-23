@@ -56,5 +56,3 @@ def move(x,y):
         #print(p1_score)
         #print(p2_score)
     return
-
-move(1,4)
