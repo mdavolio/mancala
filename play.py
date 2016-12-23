@@ -1,12 +1,16 @@
-from game import move
+from game import *
 import sys
 
-print('Which Player are you?')
-sys.stdout.flush()
-p = int(raw_input()) - 1
+while p1_stones > 0 and p2_stones > 0:
+    print('Which Player are you?')
+    sys.stdout.flush()
+    p = int(raw_input()) - 1
 
-print('Which hole would you like to move?')
-sys.stdout.flush()
-h = int(raw_input())
+    print('Which hole would you like to move?')
+    sys.stdout.flush()
+    h = int(raw_input())
 
-move(p,h)
+    move(p,h)
+
+    print(p1_score)
+    print(p2_score)

@@ -6,6 +6,11 @@ print(grid)
 p1_score = 0
 p2_score = 0
 
+def total_stones():
+    p1_stones = np.sum(grid[0,:])
+    p2_stones = np.sum(grid[1,:])
+    return
+
 def score():
     global p1_score
     global p2_score
