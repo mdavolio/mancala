@@ -28,8 +28,17 @@ def move(x,y):
             y -= 1
 
             if y == -1:
-                x == 1
                 score()
+                x == 1
+            else:
+                grid[x,y] += 1
+
+        if x == 1:
+            y += 1
+
+            if y == 6:
+                score()
+                x == 0
             else:
                 grid[x,y] += 1
 
@@ -37,9 +46,5 @@ def move(x,y):
         print(count)
         print(grid)
     return
-
-
-
-
-
+    
 move(0,3)
