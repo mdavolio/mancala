@@ -1,11 +1,15 @@
 from game import *
 import sys
 
+p = 0
 
 while stones_1 > 0 and stones_2 > 0:
-    print('Which Player are you?')
-    sys.stdout.flush()
-    p = int(raw_input()) - 1
+
+    if p == 0:
+        print("Player 1's Turn")
+    if p == 1:
+        print("Player 2's Turn")
+    print(grid)
 
     print('Which hole would you like to move?')
     sys.stdout.flush()
@@ -13,6 +17,12 @@ while stones_1 > 0 and stones_2 > 0:
 
     move(p,h)
 
-    print('Player 1 Stones ' + str(p1_score))
-    print('Player 2 Stones ' + str(p2_score))
-    print(grid)
+    if p == 0:
+        p = 1
+    elif p == 1:
+        p = 0
+
+    # print(player)
+    # print(p1_score)
+    # print(p2_score)
+    print('\n')

@@ -1,7 +1,7 @@
 import numpy as np
 
-grid  = np.array([[4,4,4,4,4,4], [4,4,4,4,4,4]])
-print(grid)
+grid  = np.array([[1,0,0,0,0,0], [4,4,4,4,4,4]])
+# print(grid)
 
 p1_score = 0
 p2_score = 0
@@ -23,11 +23,16 @@ def score():
 def move(x,y):
     global player
     global count
+    global p1_score
+    global p2_score
+
+    # print(x)
 
     if x == 0:
         player = 1
     elif x == 1:
         player = 2
+    # print('player: ', player)
 
     count = grid[x,y]
 
@@ -39,7 +44,8 @@ def move(x,y):
 
             if y == -1:
                 x = 1
-                score()
+                if player == 1:
+                    p1_score += 1
             else:
                 grid[x,y] += 1
 
@@ -48,7 +54,8 @@ def move(x,y):
 
             if y == 6:
                 x = 0
-                score()
+                if player == 2:
+                    p2_score +=1
             else:
                 grid[x,y] += 1
 
