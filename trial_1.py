@@ -24,18 +24,19 @@ def move(x,y):
     grid[x,y] = 0
 
     while count > 0:
-        if y == 0:
-            x -= 1
+        if x == 0:
+            y -= 1
 
-            if x == -1:
-                y == 1
+            if y == -1:
+                x == 1
                 score()
             else:
                 grid[x,y] += 1
 
         count -= 1
+        print(count)
         print(grid)
-        return
+    return
 
 
 
