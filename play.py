@@ -12,3 +12,7 @@ while stones_1 > 0 and stones_2 > 0:
     h = int(raw_input())
 
     move(p,h)
+
+    print('Player 1 Stones ' + str(p1_score))
+    print('Player 2 Stones ' + str(p2_score))
+    print(grid)

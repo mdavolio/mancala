@@ -18,7 +18,7 @@ def score():
         p2_score += 1
         return p2_score
     count = count - 1
-    return count
+    return
 
 def move(x,y):
     global player
@@ -58,7 +58,7 @@ def move(x,y):
         stones_2 = np.sum(grid[1,:])
 
         # print(count)
-        print(grid)
+        # print(grid)
         # print(p1_score)
         # print(p2_score)
     return
