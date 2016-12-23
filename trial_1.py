@@ -21,13 +21,24 @@ def move(x,y):
         player = 2
 
     count = grid[x,y]
+    grid[x,y] = 0
 
-    while count
-    print(count)
-    print(player)
+    while count > 0:
+        if y == 0:
+            x -= 1
+
+            if x == -1:
+                y == 1
+                score()
+            else:
+                grid[x,y] += 1
+
+        count -= 1
+        print(grid)
+        return
 
 
 
 
 
-move(1,2)
+move(0,3)
