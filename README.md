@@ -2,9 +2,9 @@
 Simulator for Mancala
 
 ##Things to Do
-1) Fix scoring and display scores
+1) Fix scoring and display scores (temp fixed)
 
-2) Fix false scoring for wrong player
+2) Fix false scoring for wrong player-don't place stone in wrong side
 
 3) Don't allow illegal moves
 
