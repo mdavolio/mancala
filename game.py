@@ -1,10 +1,11 @@
 import numpy as np
 
-grid  = np.array([[1,0,0,0,0,0], [4,4,4,4,4,4]])
+grid  = np.array([[3,1,0,0,0,0], [4,4,4,4,4,4]])
 # print(grid)
 
 global p1_score, p2_score
 global stones_1, stones_2
+global player
 
 p1_score = 0
 p2_score = 0
@@ -45,8 +46,8 @@ def move(x,y):
 
             if y == -1:
                 x = 1
-                if player == 1:
-                    p1_score += 1
+                # if player == 1:
+                #    p1_score += 1
             else:
                 grid[x,y] += 1
 
@@ -55,8 +56,8 @@ def move(x,y):
 
             if y == 6:
                 x = 0
-                if player == 2:
-                    p2_score +=1
+                # if player == 2:
+                #    p2_score +=1
             else:
                 grid[x,y] += 1
 
