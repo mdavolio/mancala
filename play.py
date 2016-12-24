@@ -22,6 +22,10 @@ while stones_1 > 0 and stones_2 > 0:
     elif p == 1:
         p = 0
 
+    stones_1 = np.sum(grid[0,:])
+    stones_2 = np.sum(grid[1,:])
+
+    print stones_1
     # print(player)
     # print(p1_score)
     # print(p2_score)
