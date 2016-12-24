@@ -31,6 +31,6 @@ while stones_1 > 0 and stones_2 > 0:
         p = 0
 
     print('\n')
-    print('Player 1 Score: ', p1_score) 
+    print('Player 1 Score: ', p1_score)
     print('Player 2 Score: ', p2_score)
     print('\n')
