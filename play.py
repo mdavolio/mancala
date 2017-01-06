@@ -22,7 +22,7 @@ while stones_1 > 0 and stones_2 > 0:
     ### Player chooses which hole, currently 0-5
     print('Which hole would you like to move?')
     sys.stdout.flush()
-    h = int(raw_input())
+    h = int(input())
 
     ### Run move function, doesn't calculate score
     move(p,h)
