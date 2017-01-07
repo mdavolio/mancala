@@ -3,7 +3,7 @@
 
 class Game():
     """Represents a mancala game."""
-    _default_board = [3, 1, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 0]
+    _default_board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
 
     def __init__(self):
 
