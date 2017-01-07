@@ -30,12 +30,22 @@ class TestMoves(unittest.TestCase):
         self.assertEqual(g._board,
                          [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0])
         self.assertEqual(g.score(), (0, 0))
+        self.assertEqual(g.turn_player(), 2)
 
     def test_move_01(self):
         g = Game()
         g.move(1)
         self.assertEqual(g._board,
                          [4, 0, 5, 5, 5, 5, 0, 4, 4, 4, 4, 4, 4, 0])
+        self.assertEqual(g.turn_player(), 2)
+
+    def test_move_04(self):
+        g = Game()
+        g.move(4)
+        self.assertEqual(g._board,
+                         [4, 4, 4, 4, 0, 5, 0, 5, 5, 5, 4, 4, 4, 0])
+        self.assertEqual(g.score(), (0, 0))
+        self.assertEqual(g.turn_player(), 2)
 
 
 if __name__ == '__main__':

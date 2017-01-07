@@ -68,6 +68,6 @@ class Game():
             count -= 1  # one less stone to move
 
         # Flip the current player IFF the turn ends on a new spot
-        self._player_one = not self._player_one if idx == current_idx else self._player_one
+        self._player_one = self._player_one if idx == current_idx else not self._player_one
 
         return self.score()
