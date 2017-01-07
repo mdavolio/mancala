@@ -45,6 +45,7 @@ class Game():
             return self.score()
 
         # TODO: check if player is allowed to move this spot
+        # ie, in their side of the board, it's actually a valid board spot, not empty, etc
 
         self._moves.append(idx)
         # Calculate stones in chosen hole
@@ -62,7 +63,7 @@ class Game():
             current_idx += motion
             if (self._player_one and current_idx == 6):
                 continue
-            if (not self._player_one and current_idx == 13):
+            if ((not self._player_one) and current_idx == 13):
                 continue
             self._board[current_idx] += 1
             count -= 1  # one less stone to move
