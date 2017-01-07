@@ -46,7 +46,7 @@ class Game():
 
         # TODO: check if player is allowed to move this spot
 
-        self.moves.append(idx)
+        self._moves.append(idx)
         # Calculate stones in chosen hole
         count = self._board[idx]
 
@@ -55,7 +55,7 @@ class Game():
 
         # Player one moves right to left
         # Player two moves left to right
-        motion = 1 if self.player == 1 else -1
+        motion = 1 if self._player_one else -1
 
         # While still stones to move
         while count > 0:
