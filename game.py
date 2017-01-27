@@ -56,11 +56,12 @@ class Game():
 
         # Player one moves right to left
         # Player two moves left to right
+        ### IF BOARD IS CIRCULAR BOTH MOVE CLOCKWISE--NOT RIGHT OR LEFT???
         motion = 1 if self._player_one else -1
 
         # While still stones to move
         while count > 0:
-            current_idx += motion
+            current_idx += 1
             if (self._player_one and current_idx == 6):
                 continue
             if ((not self._player_one) and current_idx == 13):
