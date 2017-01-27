@@ -67,6 +67,7 @@ class Game():
                 count -= 1
                 continue
             if ((not self._player_one) and current_idx == 13):
+                current_idx = -1
                 count -= 1
                 continue
             self._board[current_idx] += 1
