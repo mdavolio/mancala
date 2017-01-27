@@ -61,10 +61,13 @@ class Game():
 
         # While still stones to move
         while count > 0:
+            print(current_idx)
             current_idx += 1
             if (self._player_one and current_idx == 6):
+                count -= 1
                 continue
             if ((not self._player_one) and current_idx == 13):
+                count -= 1
                 continue
             self._board[current_idx] += 1
             count -= 1  # one less stone to move
