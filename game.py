@@ -44,7 +44,11 @@ class Game():
         if (self.over()):
             return self.score()
 
+        # Illegal move if empty hole
         if (self._board[idx] == 0):
+            return self.score()
+        # Illegal move if score hole chosen
+        if(idx == 6 or idx == 13):
             return self.score()
 
         self._moves.append(idx)
