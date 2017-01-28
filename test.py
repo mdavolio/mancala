@@ -47,7 +47,7 @@ class TestMoves(unittest.TestCase):
         self.assertEqual(g.score(), (1, 0))
         self.assertEqual(g.turn_player(), 2)
 
-    def test_move_05(self):
+    def test_move_11(self):
         g = Game()
         g.move(0)
         g.move(11)
@@ -55,6 +55,19 @@ class TestMoves(unittest.TestCase):
                          [1, 6, 5, 5, 5, 4, 0, 4, 4, 4, 4, 0, 5, 1])
         self.assertEqual(g.score(), (0, 1))
         self.assertEqual(g.turn_player(), 1)
+
+class TestIllegalMove(unittest.TestCase):
+
+    def Illegal_empty(self):
+        g = Game()
+        g.move(0)
+        g.move(7)
+        g.move(0)
+        self.assertEqual(g._board,
+                         [0, 5, 5, 5, 5, 4, 0, 0, 5, 5, 5, 5, 4, 0])
+        self.assertEqual(g.score(), (0, 0))
+        self.assertEqual(g.turn_player(), 1)
+
 
 
 if __name__ == '__main__':
