@@ -64,11 +64,11 @@ class Game():
             print(current_idx)
             current_idx += 1
             if (self._player_one and current_idx == 6):
-                count -= 1
+                count -= 1  # one less stone to move
                 continue
             if ((not self._player_one) and current_idx == 13):
-                current_idx = -1
-                count -= 1
+                current_idx = -1   # need to move stones to other side
+                count -= 1  # one less stone to move
                 continue
             self._board[current_idx] += 1
             count -= 1  # one less stone to move

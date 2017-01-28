@@ -3,8 +3,6 @@ Simulator for Mancala
 
 ##Things to Do
 
-1a) P2 movement after scoring needs reseting
-
 1) Fix scoring for P1 & P2
 
 1.1) Make sure scoring doesn't count for wrong player
