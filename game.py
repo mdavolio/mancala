@@ -59,13 +59,10 @@ class Game():
             current_idx += 1
             print(current_idx)
             if (self._player_one and current_idx == 13):
-                # count -= 1  # one less stone to move
                 continue
             if ((not self._player_one) and current_idx == 6):
-                # current_idx = -1   # need to move stones to other side
-                # count -= 1  # one less stone to move
                 continue
-            self._board[current_idx] += 1
+            self._board[current_idx % len(self._board)] += 1
             count -= 1  # one less stone to move
 
         # Flip the current player IFF the turn ends on a new spot
