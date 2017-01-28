@@ -101,5 +101,24 @@ class TestIllegalMove(unittest.TestCase):
         self.assertEqual(g.score(), (0, 0))
         self.assertEqual(g.turn_player(), 2)
 
+class TestMoveAgain(unittest.TestCase):
+
+    def test_last_in_end_p1(self):
+        g = Game()
+        g.move(2)
+        self.assertEqual(g._board,
+                         [4, 4, 0, 5, 5, 5, 1, 4, 4, 4, 4, 4, 4, 0])
+        self.assertEqual(g.score(), (1, 0))
+        self.assertEqual(g.turn_player(), 1)
+
+    def test_last_in_end_p2(self):
+        g = Game()
+        g.move(0)
+        g.move(9)
+        self.assertEqual(g._board,
+                         [0, 5, 5, 5, 5, 4, 0, 4, 4, 0, 5, 5, 5, 1])
+        self.assertEqual(g.score(), (0, 1))
+        self.assertEqual(g.turn_player(), 2)
+
 if __name__ == '__main__':
     unittest.main()

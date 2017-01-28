@@ -52,9 +52,9 @@ class Game():
             return self.score()
         # Illegal p1 choose p2
         if(self._player_one and (idx > 5 or idx < 0)):
-            return
+            return self.score()
         if(not self._player_one and (idx < 7 or idx > 12)):
-            return
+            return self.score()
 
         self._moves.append(idx)
         # Calculate stones in chosen hole
@@ -66,13 +66,15 @@ class Game():
         # While still stones to move
         while count > 0:
             current_idx += 1
-            print(current_idx)
             if (self._player_one and current_idx == 13):
                 continue
             if ((not self._player_one) and current_idx == 6):
                 continue
             self._board[current_idx % len(self._board)] += 1
             count -= 1  # one less stone to move
+
+        if(current_idx == 6 or current_idx == 13):
+            return self.score()
 
         # Flip the current player IFF the turn ends on a new spot
         self._player_one = self._player_one if idx == current_idx else not self._player_one
