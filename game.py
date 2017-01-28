@@ -54,11 +54,6 @@ class Game():
         self._board[idx] = 0
         current_idx = idx
 
-        # Player one moves right to left
-        # Player two moves left to right
-        ### IF BOARD IS CIRCULAR BOTH MOVE CLOCKWISE--NOT RIGHT OR LEFT???
-        motion = 1 if self._player_one else -1
-
         # While still stones to move
         while count > 0:
             print(current_idx)
