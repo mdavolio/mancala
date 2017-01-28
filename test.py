@@ -43,8 +43,8 @@ class TestMoves(unittest.TestCase):
         g = Game()
         g.move(4)
         self.assertEqual(g._board,
-                         [4, 4, 4, 4, 0, 5, 0, 5, 5, 5, 4, 4, 4, 0])
-        self.assertEqual(g.score(), (0, 0))
+                         [4, 4, 4, 4, 0, 5, 1, 5, 5, 4, 4, 4, 4, 0])
+        self.assertEqual(g.score(), (1, 0))
         self.assertEqual(g.turn_player(), 2)
 
 
