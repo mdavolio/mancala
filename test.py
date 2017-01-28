@@ -52,7 +52,7 @@ class TestMoves(unittest.TestCase):
         g.move(0)
         g.move(11)
         self.assertEqual(g._board,
-                         [1, 5, 5, 5, 5, 4, 0, 4, 4, 4, 0, 5, 5, 1])
+                         [1, 6, 5, 5, 5, 4, 0, 4, 4, 4, 4, 0, 5, 1])
         self.assertEqual(g.score(), (0, 1))
         self.assertEqual(g.turn_player(), 1)
 
