@@ -32,7 +32,7 @@ class Game():
         # There are certainly better ways to render this
         s = '    {0: >2} {1: >2} {2: >2} {3: >2} {4: >2} {5: >2}\n'.format(
             self._board[0], self._board[1], self._board[2], self._board[3], self._board[4], self._board[5])
-        s += ' {0: >2}                   {0: >2} \n'.format(
+        s += ' {0: >2}                   {1: >2} \n'.format(
             self._board[13], self._board[6])
         s += '    {0: >2} {1: >2} {2: >2} {3: >2} {4: >2} {5: >2}'.format(
             self._board[12], self._board[11], self._board[10], self._board[9], self._board[8], self._board[7])
@@ -56,8 +56,8 @@ class Game():
 
         # While still stones to move
         while count > 0:
-            print(current_idx)
             current_idx += 1
+            print(current_idx)
             if (self._player_one and current_idx == 13):
                 # count -= 1  # one less stone to move
                 continue
