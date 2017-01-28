@@ -47,9 +47,14 @@ class Game():
         # Illegal move if empty hole
         if (self._board[idx] == 0):
             return self.score()
-        # Illegal move if score hole chosen
+        # Illegal move if score hole chosen ... not really necessary but keep for now
         if(idx == 6 or idx == 13):
             return self.score()
+        # Illegal p1 choose p2
+        if(self._player_one and (idx > 5 or idx < 0)):
+            return
+        if(not self._player_one and (idx < 7 or idx > 12)):
+            return
 
         self._moves.append(idx)
         # Calculate stones in chosen hole
