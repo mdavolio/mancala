@@ -1,82 +1,71 @@
-### Game file
-### Code for a turn
+# -*- coding: utf-8 -*-
 
-import numpy as np
 
-### creates board, 2 players by 6 holes
-### current testing situations:
-### Player 1: testing
-### Player 2: Full
-grid  = np.array([[3,1,0,0,0,0], [4,4,4,4,4,4]])
-# print(grid)
+class Game():
+    """Represents a mancala game."""
+    _default_board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
 
-global p1_score, p2_score ### score tracker
-global stones_1, stones_2 ### Number of total stones a player has
-global player ### Player Number
+    def __init__(self):
 
-p1_score = 0
-p2_score = 0
-stones_1 = np.sum(grid[0,:]) ### Sum total player 1 remaining
-stones_2 = np.sum(grid[1,:]) ### Sum total player 2 remaining
+        # creates board, 2 players by 6 holes
+        self._board = Game._default_board[:]
+        # so the board looks like 00 01 02 03 04 05
+        #                      13                   06
+        #                         12 11 10 09 08 07
+        # Player 1 scores in 13 and Player 2 scores in 06
 
-### called when a player scores a point
-def score():
-    if player == 1:
-        p1_score += 1
-        return p1_score
-    elif player == 2:
-        p2_score += 1
-        return p2_score
-    count = count - 1 ### Calculates for stone placed in end hole
-    return
+        self._player_one = True
+        self._moves = []
 
-### Called to calculate moves
-def move(x,y):
-    global player
-    global count ### number of stones in chosen hole`
-    global p1_score
-    global p2_score
+    def turn_player(self):
+        return 1 if self._player_one else 2
 
-    # print(x)
+    def score(self):
+        return (self._board[6], self._board[13])
 
-    ### defines player variable
-    if x == 0:
-        player = 1
-    elif x == 1:
-        player = 2
-    # print('player: ', player)
+    def over(self):
+        stones_left_01 = sum(self._board[0:6])
+        stones_left_02 = sum(self._board[7:13])
+        return stones_left_01 == 0 or stones_left_02 == 0
 
-    ### Calculate stones in chosen hole
-    count = grid[x,y]
+    def board_render(self):
+        # There are certainly better ways to render this
+        s = '    {0: >2} {1: >2} {2: >2} {3: >2} {4: >2} {5: >2}\n'.format(
+            self._board[0], self._board[1], self._board[2], self._board[3], self._board[4], self._board[5])
+        s += ' {0: >2}                   {1: >2} \n'.format(
+            self._board[13], self._board[6])
+        s += '    {0: >2} {1: >2} {2: >2} {3: >2} {4: >2} {5: >2}'.format(
+            self._board[12], self._board[11], self._board[10], self._board[9], self._board[8], self._board[7])
+        return s
 
-    # grid[x,y] = 0
+    # Called to calculate moves
+    def move(self, idx):
+        """Perform a move action on a given index, based on the current player"""
+        if (self.over()):
+            return self.score()
 
-    ### While still stones to move
-    while count > 0:
-        if x == 0:
-            y -= 1 ### Player one moves right to left
+        # TODO: check if player is allowed to move this spot
+        # ie, in their side of the board, it's actually a valid board spot, not empty, etc
 
-            if y == -1: ### Switch direction when y goes negative
-                x = 1
-                # if player == 1:
-                #    p1_score += 1
-            else:
-                grid[x,y] += 1
+        self._moves.append(idx)
+        # Calculate stones in chosen hole
+        count = self._board[idx]
 
-        elif x == 1:
-            y += 1 ### Player two moves left to right
+        self._board[idx] = 0
+        current_idx = idx
 
-            if y == 6: ### Switch directions when y gets to end of board
-                x = 0
-                # if player == 2:
-                #    p2_score +=1
-            else:
-                grid[x,y] += 1
+        # While still stones to move
+        while count > 0:
+            current_idx += 1
+            print(current_idx)
+            if (self._player_one and current_idx == 13):
+                continue
+            if ((not self._player_one) and current_idx == 6):
+                continue
+            self._board[current_idx % len(self._board)] += 1
+            count -= 1  # one less stone to move
 
-        count -= 1 ### one less stone to move
+        # Flip the current player IFF the turn ends on a new spot
+        self._player_one = self._player_one if idx == current_idx else not self._player_one
 
-        # print(count)
-        # print(grid)
-        # print(p1_score)
-        # print(p2_score)
-    return
+        return self.score()

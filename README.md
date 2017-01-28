@@ -2,16 +2,17 @@
 Simulator for Mancala
 
 ##Things to Do
-1) Fix scoring and display scores (temp fixed)
 
-2) Fix false scoring for wrong player-don't place stone in wrong side
+1) Fix scoring for P1 & P2
 
-3) Don't allow illegal moves
+1.1) Make sure scoring doesn't count for wrong player
 
-4) If land in last spot, go again
+2) Ensure no illegal moves can be made
 
-5) Redefine numbers of holes?
+2.1) wrong side of board
 
-(Change from 0-5 to 1-6 or change P-1 and P-2 to be diff)
+2.2) empty holes
 
-6) Create bots with strategy based on landing placement
+2.3) scoring holes
+
+3) If land in last spot, go again
