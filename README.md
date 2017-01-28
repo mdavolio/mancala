@@ -3,6 +3,6 @@ Simulator for Mancala
 
 ##Things to Do
 
-1) END THE Game
+## Questions about Rules
 
-5) capture if last stone ends in opp empty
+1) Should capture work if no stones on opp side?????

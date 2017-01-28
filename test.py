@@ -120,5 +120,45 @@ class TestMoveAgain(unittest.TestCase):
         self.assertEqual(g.score(), (0, 1))
         self.assertEqual(g.turn_player(), 2)
 
+class TestCapture(unittest.TestCase):
+
+    def test_capture_p1_okay(self):
+        g = Game()
+        g._board = [1,0,0,4,0,0,0,2,3,0,0,1,0,0]
+        g.move(0)
+        self.assertEqual(g._board,
+                         [0, 0, 0, 4, 0, 0, 2, 2, 3, 0, 0, 0, 0, 0])
+        self.assertEqual(g.score(), (2, 0))
+        self.assertEqual(g.turn_player(), 2)
+
+    def test_capture_p2_okay(self):
+        g = Game()
+        g._board = [1,0,0,1,0,0,0,2,3,0,0,1,0,0]
+        g._player_one = False
+        g.move(11)
+        self.assertEqual(g._board,
+                         [0, 0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 2])
+        self.assertEqual(g.score(), (0, 2))
+        self.assertEqual(g.turn_player(), 1)
+
+    def test_capture_p1_not_okay(self):
+        g = Game()
+        g._board = [1,0,0,4,1,3,0,2,0,0,0,1,0,0]
+        g.move(5)
+        self.assertEqual(g._board,
+                         [1, 0, 0, 4, 1, 0, 1, 3, 1, 0, 0, 1, 0, 0])
+        self.assertEqual(g.score(), (1, 0))
+        self.assertEqual(g.turn_player(), 2)
+'''
+    def test_capture_p2_not_okay(self):
+        g = Game()
+        g._board = [1,0,0,1,0,0,0,2,3,0,0,1,0,0]
+        g._player_one = False
+        g.move(11)
+        self.assertEqual(g._board,
+                         [0, 0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 2])
+        self.assertEqual(g.score(), (0, 2))
+        self.assertEqual(g.turn_player(), 1)
+'''
 if __name__ == '__main__':
     unittest.main()

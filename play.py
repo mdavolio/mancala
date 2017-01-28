@@ -18,9 +18,10 @@ while not game_current.over():
     i = input()
     if (i == 'q'):
         break
-    try:
-        m = int(i)
-        game_current.move(m)
-    except:
+#    try:
+    m = int(i)
+    game_current.move(m)
+'''    except:
         print("Unable to play that move...")
         pass
+'''

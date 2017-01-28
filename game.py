@@ -38,6 +38,21 @@ class Game():
             self._board[12], self._board[11], self._board[10], self._board[9], self._board[8], self._board[7])
         return s
 
+    @staticmethod
+    def idx_player_1(idx):
+        return idx <= 5 and idx >= 0
+
+    @staticmethod
+    def idx_player_2(idx):
+        return idx >= 7 and idx <=12
+
+    @staticmethod
+    def own_zone(idx, player):
+        if player:
+            return Game.idx_player_1
+        else:
+            return Game.idx_player_2
+
     # Called to calculate moves
     def move(self, idx):
         """Perform a move action on a given index, based on the current player"""
@@ -51,9 +66,9 @@ class Game():
         if(idx == 6 or idx == 13):
             return self.score()
         # Illegal p1 choose p2
-        if(self._player_one and (idx > 5 or idx < 0)):
+        if(self._player_one and not Game.idx_player_1(idx)):
             return self.score()
-        if(not self._player_one and (idx < 7 or idx > 12)):
+        if(not self._player_one and not Game.idx_player_2(idx)):
             return self.score()
 
         self._moves.append(idx)
@@ -65,12 +80,12 @@ class Game():
 
         # While still stones to move
         while count > 0:
-            current_idx += 1
+            current_idx = (current_idx + 1) % len(self._board)
             if (self._player_one and current_idx == 13):
                 continue
             if ((not self._player_one) and current_idx == 6):
                 continue
-            self._board[current_idx % len(self._board)] += 1
+            self._board[current_idx] += 1
             count -= 1  # one less stone to move
 
         # If last stone ends in score go again
@@ -78,7 +93,7 @@ class Game():
             return self.score()
 
         # Capture rule
-        if(self._board[current_idx] == 1):
+        if(self._board[current_idx] == 1 and Game.own_zone(current_idx, self._player_one)):
             extra_stones = 1 + self._board[12 - current_idx]
             self._board[12 - current_idx] = 0
             self._board[current_idx] = 0
