@@ -21,7 +21,7 @@ class Game():
         return 1 if self._player_one else 2
 
     def score(self):
-        return (self._board[13], self._board[6])
+        return (self._board[6], self._board[13])
 
     def over(self):
         stones_left_01 = sum(self._board[0:6])
@@ -63,12 +63,12 @@ class Game():
         while count > 0:
             print(current_idx)
             current_idx += 1
-            if (self._player_one and current_idx == 6):
-                count -= 1  # one less stone to move
+            if (self._player_one and current_idx == 13):
+                # count -= 1  # one less stone to move
                 continue
-            if ((not self._player_one) and current_idx == 13):
-                current_idx = -1   # need to move stones to other side
-                count -= 1  # one less stone to move
+            if ((not self._player_one) and current_idx == 6):
+                # current_idx = -1   # need to move stones to other side
+                # count -= 1  # one less stone to move
                 continue
             self._board[current_idx] += 1
             count -= 1  # one less stone to move
