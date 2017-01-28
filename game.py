@@ -73,8 +73,19 @@ class Game():
             self._board[current_idx % len(self._board)] += 1
             count -= 1  # one less stone to move
 
+        # If last stone ends in score go again
         if(current_idx == 6 or current_idx == 13):
             return self.score()
+
+        # Capture rule
+        if(self._board[current_idx] == 1):
+            extra_stones = 1 + self._board[12 - current_idx]
+            self._board[12 - current_idx] = 0
+            self._board[current_idx] = 0
+            if(self._player_one):
+                self._board[6] += extra_stones
+            else:
+                self._board[13] += extra_stones
 
         # Flip the current player IFF the turn ends on a new spot
         self._player_one = self._player_one if idx == current_idx else not self._player_one
