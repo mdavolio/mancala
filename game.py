@@ -44,8 +44,8 @@ class Game():
         if (self.over()):
             return self.score()
 
-        # TODO: check if player is allowed to move this spot
-        # ie, in their side of the board, it's actually a valid board spot, not empty, etc
+        if (self._board[idx] == 0):
+            return self.score()
 
         self._moves.append(idx)
         # Calculate stones in chosen hole
