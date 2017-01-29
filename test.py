@@ -56,6 +56,24 @@ class TestMoves(unittest.TestCase):
         self.assertEqual(g.score(), (0, 1))
         self.assertEqual(g.turn_player(), 1)
 
+class TestOwnZone(unittest.TestCase):
+
+    def test_player1(self):
+        for i in range(0,6):
+            self.assertTrue(Game.idx_player_1(i))
+        for i in range(-50,0):
+            self.assertFalse(Game.idx_player_1(i))
+        for i in range(6,200):
+            self.assertFalse(Game.idx_player_1(i))
+
+    def test_player2(self):
+        for i in range(-20,7):
+            self.assertFalse(Game.idx_player_2(i))
+        for i in range(7,13):
+            self.assertTrue(Game.idx_player_2(i))
+        for i in range(13,200):
+            self.assertFalse(Game.idx_player_2(i))
+
 class TestIllegalMove(unittest.TestCase):
 
     def test_Illegal_empty(self):
