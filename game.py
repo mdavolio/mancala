@@ -44,7 +44,7 @@ class Game():
 
     @staticmethod
     def idx_player_2(idx):
-        return idx >= 7 and idx <=12
+        return idx >= 7 and idx <= 12
 
     @staticmethod
     def own_zone(idx, player):
