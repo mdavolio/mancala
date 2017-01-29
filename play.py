@@ -4,7 +4,7 @@
 from game import Game
 import sys
 
-def Play():
+def Play(move):
     game_current = Game()
 
     while not game_current.over():
@@ -20,7 +20,7 @@ def Play():
         if (i == 'q'):
             break
     #    try:
-        m = int(i)
+        m = int(move)
         game_current.move(m)
     '''    except:
             print("Unable to play that move...")
