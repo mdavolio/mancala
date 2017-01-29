@@ -49,9 +49,9 @@ class Game():
     @staticmethod
     def own_zone(idx, player):
         if player:
-            return Game.idx_player_1
+            return Game.idx_player_1(idx)
         else:
-            return Game.idx_player_2
+            return Game.idx_player_2(idx)
 
     # Called to calculate moves
     def move(self, idx):

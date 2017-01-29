@@ -56,6 +56,31 @@ class TestMoves(unittest.TestCase):
         self.assertEqual(g.score(), (0, 1))
         self.assertEqual(g.turn_player(), 1)
 
+class TestOwnZone(unittest.TestCase):
+
+    def test_player1(self):
+        for i in range(0,6):
+            self.assertTrue(Game.idx_player_1(i))
+        for i in range(-50,0):
+            self.assertFalse(Game.idx_player_1(i))
+        for i in range(6,200):
+            self.assertFalse(Game.idx_player_1(i))
+
+    def test_player2(self):
+        for i in range(-20,7):
+            self.assertFalse(Game.idx_player_2(i))
+        for i in range(7,13):
+            self.assertTrue(Game.idx_player_2(i))
+        for i in range(13,200):
+            self.assertFalse(Game.idx_player_2(i))
+
+    def test_own_zone(self):
+        for i in range(-50, 50):
+            self.assertEqual(Game.own_zone(i, True),
+                             Game.idx_player_1(i))
+            self.assertEqual(Game.own_zone(i, False),
+                             Game.idx_player_2(i))
+
 class TestIllegalMove(unittest.TestCase):
 
     def test_Illegal_empty(self):
@@ -149,7 +174,7 @@ class TestCapture(unittest.TestCase):
                          [1, 0, 0, 4, 1, 0, 1, 3, 1, 0, 0, 1, 0, 0])
         self.assertEqual(g.score(), (1, 0))
         self.assertEqual(g.turn_player(), 2)
-'''
+
     def test_capture_p2_not_okay(self):
         g = Game()
         g._board = [1,0,0,1,0,0,0,2,3,0,0,1,0,0]
@@ -159,6 +184,6 @@ class TestCapture(unittest.TestCase):
                          [0, 0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 2])
         self.assertEqual(g.score(), (0, 2))
         self.assertEqual(g.turn_player(), 1)
-'''
+
 if __name__ == '__main__':
     unittest.main()
