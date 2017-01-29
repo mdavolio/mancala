@@ -174,7 +174,7 @@ class TestCapture(unittest.TestCase):
                          [1, 0, 0, 4, 1, 0, 1, 3, 1, 0, 0, 1, 0, 0])
         self.assertEqual(g.score(), (1, 0))
         self.assertEqual(g.turn_player(), 2)
-'''
+
     def test_capture_p2_not_okay(self):
         g = Game()
         g._board = [1,0,0,1,0,0,0,2,3,0,0,1,0,0]
@@ -184,6 +184,6 @@ class TestCapture(unittest.TestCase):
                          [0, 0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 2])
         self.assertEqual(g.score(), (0, 2))
         self.assertEqual(g.turn_player(), 1)
-'''
+
 if __name__ == '__main__':
     unittest.main()
