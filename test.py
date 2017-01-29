@@ -74,6 +74,13 @@ class TestOwnZone(unittest.TestCase):
         for i in range(13,200):
             self.assertFalse(Game.idx_player_2(i))
 
+    def test_own_zone(self):
+        for i in range(-50, 50):
+            self.assertEqual(Game.own_zone(i, True),
+                             Game.idx_player_1(i))
+            self.assertEqual(Game.own_zone(i, False),
+                             Game.idx_player_2(i))
+
 class TestIllegalMove(unittest.TestCase):
 
     def test_Illegal_empty(self):
