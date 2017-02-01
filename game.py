@@ -26,8 +26,9 @@ class Game():
     def over(self):
         stones_left_01 = sum(self._board[0:6])
         stones_left_02 = sum(self._board[7:13])
-        return stones_left_01 == 0 or stones_left_02 == 0
-
+        # return stones_left_01 == 0 or stones_left_02 == 0
+        return self._board[6] >= 25 or self._board[13] >= 25
+        
     def board_render(self):
         # There are certainly better ways to render this
         s = '    {0: >2} {1: >2} {2: >2} {3: >2} {4: >2} {5: >2}\n'.format(
