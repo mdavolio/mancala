@@ -204,6 +204,26 @@ class TestCapture(unittest.TestCase):
         self.assertEqual(g.score(), (2, 2))
         self.assertEqual(g.turn_player(), 1)
 
+    def test_capture_p1_not_okay_grand_slam(self):
+        g = Game()
+        g._board = [1,0,0,0,0,1,1,0,0,0,0,1,0,1]
+        g.move(0)
+        self.assertEqual(g._board,
+                         [0,1,0,0,0,1,1,0,0,0,0,1,0,1])
+        self.assertEqual(g.score(), (1, 1))
+        self.assertEqual(g.turn_player(), 2)
+
+    def test_capture_p2_not_okay_grand_slam(self):
+        g = Game()
+        g._board = [1,0,0,0,0,0,1,1,0,0,0,1,0,1]
+        g._player_one = False
+        g.move(11)
+        self.assertEqual(g._board,
+                         [1,0,0,0,0,0,1,1,0,0,0,0,1,1])
+        self.assertEqual(g.score(), (1, 1))
+        self.assertEqual(g.turn_player(), 1)
+
+
     def test_capture_score_not_okay(self):
         g = Game()
         g._board = [1,1,1,1,1,1,0,1,1,1,1,1,1,5]
