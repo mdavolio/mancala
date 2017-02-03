@@ -97,7 +97,7 @@ class Game():
             return self.score()
 
         # Capture rule
-        if(self._board[current_idx] == 1 and Game.own_zone(current_idx, self._player_one)):
+        if(self._board[current_idx] == 1 and self._board[12 - current_idx] >= 1 and Game.own_zone(current_idx, self._player_one)):
             extra_stones = 1 + self._board[12 - current_idx]
             self._board[12 - current_idx] = 0
             self._board[current_idx] = 0
