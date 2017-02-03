@@ -12,7 +12,7 @@ class Game():
         # so the board looks like 00 01 02 03 04 05
         #                      13                   06
         #                         12 11 10 09 08 07
-        # Player 1 scores in 13 and Player 2 scores in 06
+        # Player 1 scores in 06 and Player 2 scores in 13
 
         self._player_one = True
         self._moves = []
