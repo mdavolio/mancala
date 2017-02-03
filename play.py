@@ -8,7 +8,7 @@ import sys
 game_current = Game()
 
 while not game_current.over():
-    # print("\n" * 100) # Screen clearing *hack*
+    print("\n" * 100) # Screen clearing *hack*
     print("Play Mancala!")
     print("")
     print("Score | Player One | Player Two")
