@@ -185,6 +185,15 @@ class TestCapture(unittest.TestCase):
         self.assertEqual(g.score(), (0, 2))
         self.assertEqual(g.turn_player(), 1)
 
+    def test_capture_score_not_okay(self):
+        g = Game()
+        g._board = [1,1,1,1,1,1,0,1,1,1,1,1,1,5]
+        g.move(5)
+        self.assertEqual(g._board,
+                         [1,1,1,1,1,0,1,1,1,1,1,1,1,5])
+        self.assertEqual(g.score(), (1, 5))
+        self.assertEqual(g.turn_player(), 1)
+
 class TestGameEnd(unittest.TestCase):
 
     def test_p1_Win_exact(self):
@@ -223,6 +232,25 @@ class TestGameEnd(unittest.TestCase):
         self.assertEqual(g._board,
                          [3, 1, 1, 1, 1, 2, 5, 2, 1, 1, 1, 1, 1, 26])
         self.assertEqual(g.score(), (5, 26))
+        self.assertTrue(g.over())
+
+    def test_side_01_empty(self):
+        g = Game()
+        g._board = [0,0,0,0,0,4,20,5,0,0,0,0,10,13]
+        g.move(5)
+        self.assertEqual(g._board,
+                         [0,0,0,0,0,0,21,0,0,0,0,0,0,31])
+        self.assertEqual(g.score(), (21, 31))
+        self.assertTrue(g.over())
+
+    def test_side_02_empty(self):
+        g = Game()
+        g._board = [1,0,0,0,0,7,20,0,0,0,0,0,3,10]
+        g._player_one = False
+        g.move(12)
+        self.assertEqual(g._board,
+                         [0,0,0,0,0,0,30,0,0,0,0,0,0,11])
+        self.assertEqual(g.score(), (30, 11))
         self.assertTrue(g.over())
 
 if __name__ == '__main__':
