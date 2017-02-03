@@ -166,7 +166,7 @@ class TestCapture(unittest.TestCase):
         self.assertEqual(g.score(), (0, 2))
         self.assertEqual(g.turn_player(), 1)
 
-    def test_capture_p1_not_okay(self):
+    def test_capture_p1_not_okay_opp_side(self):
         g = Game()
         g._board = [1,0,0,4,1,3,0,2,0,0,0,1,0,0]
         g.move(5)
@@ -175,7 +175,7 @@ class TestCapture(unittest.TestCase):
         self.assertEqual(g.score(), (1, 0))
         self.assertEqual(g.turn_player(), 2)
 
-    def test_capture_p2_not_okay(self):
+    def test_capture_p2_not_okay_opp_side(self):
         g = Game()
         g._board = [1,0,0,1,0,0,0,2,3,0,0,1,0,0]
         g._player_one = False
@@ -183,6 +183,25 @@ class TestCapture(unittest.TestCase):
         self.assertEqual(g._board,
                          [0, 0, 0, 1, 0, 0, 0, 2, 3, 0, 0, 0, 0, 2])
         self.assertEqual(g.score(), (0, 2))
+        self.assertEqual(g.turn_player(), 1)
+
+    def test_capture_p1_not_okay_empty_opp(self):
+        g = Game()
+        g._board = [1,0,0,0,0,1,2,1,0,0,0,0,1,2]
+        g.move(0)
+        self.assertEqual(g._board,
+                         [0,1,0,0,0,1,2,1,0,0,0,0,1,2])
+        self.assertEqual(g.score(), (2, 2))
+        self.assertEqual(g.turn_player(), 2)
+
+    def test_capture_p2_not_okay_empty_opp(self):
+        g = Game()
+        g._board = [1,0,0,0,0,1,2,1,0,0,0,0,1,2]
+        g._player_one = False
+        g.move(7)
+        self.assertEqual(g._board,
+                         [1,0,0,0,0,1,2,0,1,0,0,0,1,2])
+        self.assertEqual(g.score(), (2, 2))
         self.assertEqual(g.turn_player(), 1)
 
     def test_capture_score_not_okay(self):
