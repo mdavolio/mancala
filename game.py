@@ -23,12 +23,14 @@ class Game():
     def score(self):
         return (self._board[6], self._board[13])
 
-    def over(self):
+    def side_empty(self):
         stones_left_01 = sum(self._board[0:6])
         stones_left_02 = sum(self._board[7:13])
-        # return stones_left_01 == 0 or stones_left_02 == 0
+        return stones_left_01 == 0 or stones_left_02 == 0
+
+    def over(self):
         return self._board[6] >= 25 or self._board[13] >= 25
-        
+
     def board_render(self):
         # There are certainly better ways to render this
         s = '    {0: >2} {1: >2} {2: >2} {3: >2} {4: >2} {5: >2}\n'.format(
@@ -57,6 +59,7 @@ class Game():
     # Called to calculate moves
     def move(self, idx):
         """Perform a move action on a given index, based on the current player"""
+
         if (self.over()):
             return self.score()
 
@@ -102,6 +105,14 @@ class Game():
                 self._board[6] += extra_stones
             else:
                 self._board[13] += extra_stones
+
+        if (self.side_empty()):
+            self._board[6] += sum(self._board[0:6])
+            self._board[13] += sum(self._board[7:13])
+            self._board[0:6] = [0,0,0,0,0,0]
+            self._board[7:13] = [0,0,0,0,0,0]
+            return self.score()
+
 
         # Flip the current player IFF the turn ends on a new spot
         self._player_one = self._player_one if idx == current_idx else not self._player_one
