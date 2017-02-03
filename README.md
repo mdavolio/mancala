@@ -24,8 +24,6 @@ Capturing occurs when the last stone of a move ends in an empty cell on the play
 Game currently ends when one player's side is empty
 
 ## Still working on
--No capture to end game
-
--Declare winner
+-Declare winner / keep overall score of games
 
 -Need to construct bot to play
