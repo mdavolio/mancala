@@ -98,13 +98,15 @@ class Game():
 
         # Capture rule
         if(self._board[current_idx] == 1 and self._board[12 - current_idx] >= 1 and Game.own_zone(current_idx, self._player_one)):
-            extra_stones = 1 + self._board[12 - current_idx]
-            self._board[12 - current_idx] = 0
-            self._board[current_idx] = 0
-            if(self._player_one):
-                self._board[6] += extra_stones
-            else:
-                self._board[13] += extra_stones
+            if((self._board[12 - current_idx] != sum(self._board[0:6]) and not self._player_one) or
+                ((self._board[12 - current_idx] != sum(self._board[7:13]) and self._player_one))):
+                    extra_stones = 1 + self._board[12 - current_idx]
+                    self._board[12 - current_idx] = 0
+                    self._board[current_idx] = 0
+                    if(self._player_one):
+                        self._board[6] += extra_stones
+                    else:
+                        self._board[13] += extra_stones
 
         if (self.side_empty()):
             self._board[6] += sum(self._board[0:6])
