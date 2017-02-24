@@ -35,6 +35,7 @@ def show_user_profile(board, player_turn, move):
         'board': game.board(),
         'player_turn': game.turn_player(),
         'score': game.score(),
+        'game_over': game.over(),
         'current_time': datetime.datetime.utcnow().isoformat()
     })
 
