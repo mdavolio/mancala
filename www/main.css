@@ -1,0 +1,20 @@
+p.box {
+  /*color: teal;*/
+  height: 15vh;
+  padding-top: 15vh;
+  text-align: center;
+  /*outline: 1px red solid;*/
+  outline: 1px grey solid;
+}
+
+p.player_one {
+  background-image: radial-gradient(rgba(222, 222, 222, 0), rgba(33, 174, 255, 0.53) 96%);
+}
+
+p.player_two {
+  background-image: radial-gradient(rgba(222, 222, 222, 0), rgba(255, 33, 105, 0.53) 96%);
+}
+
+p.hide {
+  visibility: hidden;
+}
