@@ -7,6 +7,12 @@ class TestInit(unittest.TestCase):
     def test_player(self):
         self.assertEqual(Game().turn_player(), 1)
 
+    def test_player(self):
+        self.assertEqual(Game(None, 1).turn_player(), 1)
+
+    def test_player(self):
+        self.assertEqual(Game(None, 2).turn_player(), 2)
+
     def test_score(self):
         self.assertEqual(Game().score(), (0, 0))
 
