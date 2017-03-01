@@ -1,5 +1,5 @@
 import unittest
-from game import Game
+from mancala.game import Game
 
 
 class TestInit(unittest.TestCase):

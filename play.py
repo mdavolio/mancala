@@ -1,7 +1,7 @@
 # Play file
 # Code to run game
 
-from game import Game
+from mancala.game import Game
 import sys
 
 # def Play():

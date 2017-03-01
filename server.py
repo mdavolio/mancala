@@ -2,8 +2,8 @@
 
 from flask import Flask, jsonify
 from flask import send_from_directory
-from utility import split_string
-from game import Game
+from mancala.utility import split_string
+from mancala.game import Game
 import datetime
 import os
 
