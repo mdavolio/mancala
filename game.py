@@ -32,7 +32,11 @@ class Game():
         return 1 if self._player_one else 2
 
     def score(self):
-        return (self._board[6], self._board[13])
+        return Game.score_board(self._board)
+
+    @staticmethod
+    def score_board(board):
+        return (board[6], board[13])
 
     def side_empty(self):
         stones_left_01 = sum(self._board[0:6])
@@ -87,7 +91,7 @@ class Game():
             return self.score()
 
         self._moves.append(idx)
-        self._history.append(self._board)
+        self._history.append(self._board[:])
         # Calculate stones in chosen hole
         count = self._board[idx]
 
