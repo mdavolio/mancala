@@ -15,6 +15,19 @@ FLASKAPP = Flask(__name__)
 FLASKAPP.config.from_object(__name__)
 
 
+def board_str_to_game(board, player_turn):
+    """Turns parameters into game or error tuple"""
+    board_arr = split_string(board, 2)
+
+    if len(board_arr) != 14:
+        return jsonify({"error": "Invalid Board"}), 400
+
+    if player_turn != 1 and player_turn != 2:
+        return jsonify({"error": "Invalid Player"}), 400
+
+    game = Game(board_arr, player_turn)
+    return game
+
 @FLASKAPP.route('/')
 def show():
     """Returns current time"""
@@ -24,18 +37,14 @@ def show():
 @FLASKAPP.route('/play/<string:board>/<int:player_turn>/<int:move>')
 def play_board(board, player_turn, move):
     """Make a move based on a player and a board"""
-    board_arr = split_string(board, 2)
-
-    if len(board_arr) != 14:
-        return jsonify({"error": "Invalid Board"}), 400
-
-    if player_turn != 1 and player_turn != 2:
-        return jsonify({"error": "Invalid Player"}), 400
 
     if move < 0 or move > 13:
         return jsonify({"error": "Invalid move"}), 400
 
-    game = Game(board_arr, player_turn)
+    game = board_str_to_game(board, player_turn)
+    if not isinstance(game, Game):
+        return game
+
     game.move(move)
     return jsonify({
         'board': game.board(),
