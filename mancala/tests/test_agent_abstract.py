@@ -4,7 +4,7 @@ Tests for the abstract agent class
 """
 
 import unittest
-from mancala.agent import Agent
+from mancala.agents.agent import Agent
 
 
 class TestAgentAbstract(unittest.TestCase):

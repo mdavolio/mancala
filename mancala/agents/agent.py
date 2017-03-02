@@ -14,5 +14,5 @@ class Agent():
 
     def _move(self, game):
         """Return a move index based on a game"""
-        raise NotImplementedError("Class {} doesn't implement aMethod()".format(
+        raise NotImplementedError("Class {} doesn't implement _move()".format(
             self.__class__.__name__))
