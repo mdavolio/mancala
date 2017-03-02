@@ -28,11 +28,11 @@ class Game():
 
     def board(self):
         """Current game board"""
-        return self._board
+        return self._board[:]
 
     def history(self):
         """Array of game boards"""
-        return self._history
+        return self._history[:]
 
     def turn_player(self):
         """Check number of current player"""
