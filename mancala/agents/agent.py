@@ -10,7 +10,7 @@ class Agent():
 
     def move(self, game=None):
         """Return a move index based on a game"""
-        self._move(game)
+        return self._move(game)
 
     def _move(self, game):
         """Return a move index based on a game"""
