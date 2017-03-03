@@ -9,10 +9,14 @@ from flask import Flask, jsonify
 from flask import send_from_directory
 from mancala.utility import split_string
 from mancala.game import Game
+from mancala.agents.random import AgentRandom
 
 
 FLASKAPP = Flask(__name__)
 FLASKAPP.config.from_object(__name__)
+
+# Define agents
+AGENT_RANDOM = AgentRandom(454)
 
 
 def board_str_to_game(board, player_turn):
@@ -26,6 +30,12 @@ def board_str_to_game(board, player_turn):
         return jsonify({"error": "Invalid Player"}), 400
 
     game = Game(board_arr, player_turn)
+    return game
+
+def agent_play(game, agent_str):
+    """Play a game, based on agent string. Or no move."""
+    if agent_str == "random":
+        game.move(AGENT_RANDOM.move(game))
     return game
 
 @FLASKAPP.route('/')
@@ -46,6 +56,25 @@ def play_board(board, player_turn, move):
         return game
 
     game.move(move)
+    return jsonify({
+        'board': game.board(),
+        'player_turn': game.turn_player(),
+        'score': game.score(),
+        'game_over': game.over(),
+        'current_time': datetime.datetime.utcnow().isoformat()
+    })
+
+
+@FLASKAPP.route('/agent/<string:board>/<int:player_turn>/<string:agent>')
+def play_agent(board, player_turn, agent):
+    """Make a move based on a player and a board"""
+
+    game = board_str_to_game(board, player_turn)
+    if not isinstance(game, Game):
+        return game
+
+    game = agent_play(game, agent)
+
     return jsonify({
         'board': game.board(),
         'player_turn': game.turn_player(),
