@@ -21,6 +21,18 @@ class TestAgentRandom(unittest.TestCase):
         move = AgentRandom(454).move(Game())
         self.assertEqual(move, 5)
 
+    def test_random_no_moves_player1(self):
+        """Test move is seeded properly"""
+        move = AgentRandom(454).move(
+            Game([0, 0, 0, 0, 0, 0, 0, 4, 4, 4, 4, 4, 4, 0]))
+        self.assertEqual(move, 0)
+
+    def test_random_no_moves_player2(self):
+        """Test move is seeded properly"""
+        move = AgentRandom(454).move(
+            Game([0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], 2))
+        self.assertEqual(move, 0)
+
     def test_random_move_02(self):
         """Test multiple moves"""
         game = Game()

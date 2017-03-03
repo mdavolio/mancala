@@ -20,5 +20,8 @@ class AgentRandom(Agent):
         self._idx = self._idx + 1
         random.seed(self._seed + self._idx)
 
-        return random.choice(Agent.valid_indices(game))
+        options = Agent.valid_indices(game)
+        if len(options) < 1:
+            return 0
 
+        return random.choice(options)
