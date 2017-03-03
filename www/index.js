@@ -26,8 +26,8 @@ const update_progress = (player, agent, status, ms = 500) => {
 };
 
 const count_down_progress = (player, agent) => {
-  return update_progress(player, agent, 100, 280)
-    .then(x => update_progress(player, agent, 0, 1750))
+  return update_progress(player, agent, 100, 80)
+    .then(x => update_progress(player, agent, 0, 150))
 }
 
 const generate_inputs = (player, types) => {
@@ -77,8 +77,9 @@ const update_state_on_response = (e) => {
   board_current = e.board;
   player_turn = e.player_turn;
   console.log(e);
-  render_player(player_turn);
+  render_player(e);
   render_board(board_current);
+  return !e.game_over;
 };
 
 const get_move = (url) => {
@@ -99,12 +100,18 @@ const cell_click = move => {
   // Send request
   return get_move(`/play/${board_to_str(board_current)}/${player_turn}/${move}`)
     .then(update_state_on_response)
-    .then(x => kick_turn());
+    .then(kick_again);
 };
-const render_player = (turn) => {
+const render_player = (game_state) => {
   const turn_elm = $('#player_turn');
-  turn_elm.html(`Player ${player_turn == 1 ? 'One' : 'Two'}'s Turn`);
-  turn_elm.css('color', player_turn == 1 ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
+  if (game_state.game_over) {
+    const player_one_win = game_state.score[0] > game_state.score[1];
+    turn_elm.html(`Player ${player_one_win ? 'One' : 'Two'} Wins!`);
+    turn_elm.css('color', player_one_win ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
+  } else {
+    turn_elm.html(`Player ${game_state.player_turn == 1 ? 'One' : 'Two'}'s Turn`);
+    turn_elm.css('color', game_state.player_turn == 1 ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
+  }
 }
 
 const i_to_str = i => i >= 10 ? `${i}` : `0${i}`;
@@ -123,7 +130,11 @@ const render_board = (board) => over_cells(i => cell_from_id(i).html(board[i] > 
 over_cells(i => cell_from_id(i).on('touchstart click', evt => cell_click(i)));
 
 
-
+const kick_again = (again) => {
+  if (again) {
+    kick_turn();
+  }
+}
 const kick_turn = () => {
   // if human, do nothing (wait for click)
   if (human_turn()) {
@@ -137,7 +148,7 @@ const kick_turn = () => {
   ])
     .then(R.nth(0))
     .then(update_state_on_response)
-    .then(x => kick_turn());
+    .then(kick_again);
 }
 
 $(`#btn-restart-game`).on('touchstart click', evt => {
@@ -154,19 +165,5 @@ $(`#btn-restart-game`).on('touchstart click', evt => {
 });
 
 render_board(board_current);
-render_player(player_turn);
+render_player({ game_over: false, player_turn });
 
-
-
-
-
-// count_down_progress(1, 'human')
-//   .then(x => count_down_progress(1, 'random'))
-//   .then(x => count_down_progress(2, 'human'))
-//   .then(x => count_down_progress(2, 'random'))
-//   .then(x => count_down_progress(1, 'random'))
-//   .then(x => count_down_progress(2, 'human'))
-//   .then(x => count_down_progress(2, 'random'))
-
-// update_progress(1, 'human', 0)
-//   .then(x => update_progress(1, 'random', 0))
