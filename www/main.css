@@ -1,0 +1,28 @@
+p.box {
+  height: 15vh;
+  padding-top: 15vh;
+  text-align: center;
+  outline: 1px grey solid;
+  margin: 1vh;
+}
+
+p.player_one {
+  background-image: radial-gradient(rgba(222, 222, 222, 0), rgba(33, 174, 255, 0.53) 96%);
+}
+
+p.player_two {
+  background-image: radial-gradient(rgba(222, 222, 222, 0), rgba(255, 0, 0, 0.53) 96%);
+}
+
+p.player_turn {
+  outline: none;
+  height: 12vh;
+  padding-top: 9vh;
+  font-size: 170%;
+  /*text-shadow: 1px 1px 1px #000;*/
+  font-weight: bold;
+}
+
+p.hide {
+  visibility: hidden;
+}

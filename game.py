@@ -5,17 +5,20 @@ class Game():
     """Represents a mancala game."""
     _default_board = [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
 
-    def __init__(self):
+    def __init__(self, board = None, player_turn = None, moves = None):
 
         # creates board, 2 players by 6 holes
-        self._board = Game._default_board[:]
+        self._board = Game._default_board[:] if board is None else board
         # so the board looks like 00 01 02 03 04 05
         #                      13                   06
         #                         12 11 10 09 08 07
         # Player 1 scores in 06 and Player 2 scores in 13
 
-        self._player_one = True
-        self._moves = []
+        self._player_one = True if player_turn is None else (player_turn == 1)
+        self._moves = [] if moves is None else moves
+
+    def board(self):
+        return self._board
 
     def turn_player(self):
         return 1 if self._player_one else 2
