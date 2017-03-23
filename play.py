@@ -1,28 +1,34 @@
-# Play file
-# Code to run game
+# -*- coding: utf-8 -*-
+"""
+Play file
+Code to run game in the terminal
+"""
 
-from game import Game
-import sys
+from mancala.game import Game
 
 # def Play():
-game_current = Game()
+GAME_CURRENT = Game()
 
-while not game_current.over():
-    print("\n" * 100) # Screen clearing *hack*
+def clear_screen():
+    """Screen clearing *hack*"""
+    print("\n" * 100)
+
+
+clear_screen()
+while not GAME_CURRENT.over():
     print("Play Mancala!")
     print("")
     print("Score | Player One | Player Two")
     print("        {0: >10} | {1: >10}".format(
-          game_current.score()[0], game_current.score()[1]))
-    print(game_current.board_render())
-    print("Player {0}'s Turn".format(game_current.turn_player()))
+        GAME_CURRENT.score()[0], GAME_CURRENT.score()[1]))
+    print(GAME_CURRENT.board_render())
+    print("Player {0}'s Turn".format(GAME_CURRENT.turn_player()))
     i = input()
-    if (i == 'q'):
+    if i == 'q':
         break
-#    try:
-    m = int(i)
-    game_current.move(m)
-'''    except:
-        print("Unable to play that move...")
-        pass
-'''
+    clear_screen()
+    try:
+        GAME_CURRENT.move(int(i))
+    except ValueError:
+        print("Invalid Move")
+

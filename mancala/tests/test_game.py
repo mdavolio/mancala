@@ -1,5 +1,5 @@
 import unittest
-from game import Game
+from mancala.game import Game
 
 
 class TestInit(unittest.TestCase):
@@ -15,6 +15,9 @@ class TestInit(unittest.TestCase):
 
     def test_score(self):
         self.assertEqual(Game().score(), (0, 0))
+
+    def test_history(self):
+        self.assertEqual(Game().history(), [])
 
     def test_over(self):
         self.assertFalse(Game().over())
@@ -37,6 +40,10 @@ class TestMoves(unittest.TestCase):
                          [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0])
         self.assertEqual(g.score(), (0, 0))
         self.assertEqual(g.turn_player(), 2)
+        self.assertEqual(g.history(), [
+            [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
+        ])
+
 
     def test_move_01(self):
         g = Game()
@@ -44,6 +51,9 @@ class TestMoves(unittest.TestCase):
         self.assertEqual(g._board,
                          [4, 0, 5, 5, 5, 5, 0, 4, 4, 4, 4, 4, 4, 0])
         self.assertEqual(g.turn_player(), 2)
+        self.assertEqual(g.history(), [
+            [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
+        ])
 
     def test_move_04(self):
         g = Game()
@@ -52,6 +62,9 @@ class TestMoves(unittest.TestCase):
                          [4, 4, 4, 4, 0, 5, 1, 5, 5, 4, 4, 4, 4, 0])
         self.assertEqual(g.score(), (1, 0))
         self.assertEqual(g.turn_player(), 2)
+        self.assertEqual(g.history(), [
+            [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0]
+        ])
 
     def test_move_11(self):
         g = Game()
@@ -61,6 +74,10 @@ class TestMoves(unittest.TestCase):
                          [1, 6, 5, 5, 5, 4, 0, 4, 4, 4, 4, 0, 5, 1])
         self.assertEqual(g.score(), (0, 1))
         self.assertEqual(g.turn_player(), 1)
+        self.assertEqual(g.history(), [
+            [4, 4, 4, 4, 4, 4, 0, 4, 4, 4, 4, 4, 4, 0],
+            [0, 5, 5, 5, 5, 4, 0, 4, 4, 4, 4, 4, 4, 0]
+        ])
 
 class TestOwnZone(unittest.TestCase):
 

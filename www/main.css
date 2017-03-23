@@ -26,3 +26,38 @@ p.player_turn {
 p.hide {
   visibility: hidden;
 }
+
+div.control-box {
+  height: 98vh;
+  overflow: scroll;
+}
+
+.player_one_text {
+  color: rgba(33, 174, 255, 0.93);
+}
+.player_two_text {
+  color: rgba(255, 0, 0, 0.93);
+}
+
+div.form-wrapper {
+  padding: 0.5em;
+}
+
+h4 {
+  margin-top: 0.2em;
+  margin-bottom: 0.05em;
+}
+
+div.radio-parent {
+  text-align: center;
+}
+
+p.player-label {
+  margin: 0.2em;
+}
+
+div.progress-bar {
+  background: teal;
+  width: 0%;
+  height: 1em;
+}
