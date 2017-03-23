@@ -3,8 +3,8 @@
 """
 Abstract Agent for the a Mancala AI
 
-Variables for equation consist of count of each cell
-Target function == Diff in score
+Maximize score: test each possible legal move, creating list of score after
+                each move, chooses move that maximizes score, if tie random
 """
 
 from .agent import Agent
@@ -20,7 +20,7 @@ class AgentMax(Agent):
 
     def _checkMax(move_test):
         board = game.board()
-        
+
         game.move(move_test)
 
         if game.turn_player() == 1:
