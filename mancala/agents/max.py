@@ -19,14 +19,14 @@ class AgentMax(Agent):
         self._idx = 0
 
     def _checkMax(move_test):
-        board = game.board()
+        #board = Game.board()
 
-        game.move(move_test)
+        Game.move(move_test)
 
         if game.turn_player() == 1:
-            max_score[move_test] = game.score()[0]
+            max_score[move_test] = Game.score()[0]
         else:
-            max_score[move_test] = game.score()[1]
+            max_score[move_test] = Game.score()[1]
 
         return max_score
 
@@ -41,10 +41,10 @@ class AgentMax(Agent):
         if len(options) < 1:
             return 0
 
-        map(_checkMax, options)
+        max_score = map(_checkMax, options)
 
         maxs = max(max_score)
-        [i for i, j in enumerate(max_score) if j == maxs]
+        final_opts = [i for i, j in enumerate(max_score) if j == maxs]
 
 
-        return random.choice(maxs)
+        return random.choice(final_opts)
