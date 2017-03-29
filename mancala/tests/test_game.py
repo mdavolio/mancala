@@ -315,5 +315,34 @@ class TestGameEnd(unittest.TestCase):
         self.assertEqual(g.score(), (30, 11))
         self.assertTrue(g.over())
 
+
+class TestGameClone(unittest.TestCase):
+
+    def game_equality(self, g_left, g_right):
+        """Test if game objects are equal"""
+        self.assertListEqual(g_left.board(), g_right.board())
+        self.assertListEqual(g_left.history(), g_right.history())
+        self.assertListEqual(g_left.moves(), g_right.moves())
+        self.assertEqual(g_left.turn_player(), g_right.turn_player())
+
+    def test_init(self):
+        g = Game()
+        g_dolly = g.clone()
+        self.game_equality(g, g_dolly)
+
+    def test_move_each(self):
+        g = Game()
+        g_dolly = g.clone()
+        g.move(2)
+        g_dolly.move(2)
+        self.game_equality(g, g_dolly)
+
+    def test_move_once(self):
+        g = Game()
+        g.move(2)
+        g_dolly = g.clone()
+        self.game_equality(g, g_dolly)
+
+
 if __name__ == '__main__':
     unittest.main()

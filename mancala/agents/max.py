@@ -18,33 +18,26 @@ class AgentMax(Agent):
         self._seed = seed
         self._idx = 0
 
-    def _checkMax(move_test):
-        #board = Game.board()
+    @staticmethod
+    def _checkMax(move_test, game):
 
-        Game.move(move_test)
+        game.move(move_test)
 
-        if game.turn_player() == 1:
-            max_score[move_test] = Game.score()[0]
-        else:
-            max_score[move_test] = Game.score()[1]
-
-        return max_score
+        return game.score()[game.turn_player() - 1]
 
     def _move(self, game):
         """Return a random valid move"""
         self._idx = self._idx + 1
         random.seed(self._seed + self._idx)
+        myGame, rot_flag = game.clone_turn()
+        
+        options = Agent.valid_indices(myGame)
 
-        max_score = []
-        options = Agent.valid_indices(game)
-
-        if len(options) < 1:
-            return 0
-
-        max_score = map(_checkMax, options)
+        max_score = list(map(lambda move_slot: AgentMax._checkMax(move_slot, game.clone()), options))
+        # return max_score
 
         maxs = max(max_score)
         final_opts = [i for i, j in enumerate(max_score) if j == maxs]
 
-
-        return random.choice(final_opts)
+        final_move = Game.rotate_board(rot_flag, random.choice(final_opts))
+        return final_move

@@ -34,6 +34,10 @@ class Game():
         """Array of game boards"""
         return self._history[:]
 
+    def moves(self):
+        """Array of game moves"""
+        return self._moves[:]
+
     def turn_player(self):
         """Check number of current player"""
         return 1 if self._player_one else 2
@@ -87,6 +91,35 @@ class Game():
             return Game.idx_player_1(idx)
         else:
             return Game.idx_player_2(idx)
+
+    def clone(self):
+        """Return a clone of the game object"""
+        return Game(
+            self.board(),
+            self.turn_player(),
+            self.moves(),
+            self.history()
+        )
+
+    def clone_turn(self):
+        '''Return a clone of the game object but transformed'''
+        if self.turn_player() == 1:
+            return self.clone(), False
+        else:
+            rot_board = self.board()[7:14] + self.board()[0:7]
+            return Game(
+                rot_board,          # return rotated board
+                1                  # change player back to 1
+            ), True
+
+
+    @staticmethod
+    def rotate_board(rot_flag, move):
+        '''True if player changes in order to rotate board'''
+        if rot_flag:
+            return move + 7
+        else:
+            return move
 
     # Called to calculate moves
     def move(self, idx):
