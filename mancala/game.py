@@ -101,6 +101,26 @@ class Game():
             self.history()
         )
 
+    def clone_turn(self):
+        '''Return a clone of the game object but transformed'''
+        if self.turn_player() == 1:
+            return self.clone(), False
+        else:
+            rot_board = self.board()[7:14] + self.board()[0:7]
+            return Game(
+                rot_board,          # return rotated board
+                1                  # change player back to 1
+            ), True
+
+
+    @staticmethod
+    def rotate_board(rot_flag, move):
+        '''True if player changes in order to rotate board'''
+        if rot_flag:
+            return move + 7
+        else:
+            return move
+
     # Called to calculate moves
     def move(self, idx):
         """Perform a move action on a given index, based on the current player"""

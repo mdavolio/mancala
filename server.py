@@ -10,6 +10,7 @@ from flask import send_from_directory
 from mancala.utility import split_string
 from mancala.game import Game
 from mancala.agents.random import AgentRandom
+from mancala.agents.max import AgentMax
 
 
 FLASKAPP = Flask(__name__)
@@ -17,6 +18,7 @@ FLASKAPP.config.from_object(__name__)
 
 # Define agents
 AGENT_RANDOM = AgentRandom(454)
+AGENT_MAX = AgentMax(454)
 
 
 def board_str_to_game(board, player_turn):
@@ -36,6 +38,8 @@ def agent_play(game, agent_str):
     """Play a game, based on agent string. Or no move."""
     if agent_str == "random":
         game.move(AGENT_RANDOM.move(game))
+    elif agent_str == 'max':
+        game.move(AGENT_MAX.move(game))
     return game
 
 @FLASKAPP.route('/')

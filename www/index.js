@@ -5,7 +5,7 @@ const reset_state = () => {
   player_turn = 1;
 }
 
-const player_types = { 'human': { url: '' }, 'random': { url: '' } };
+const player_types = { 'human': { url: '' }, 'random': { url: '' }, 'max': {url: '' } };
 const players = ['one', 'two'];
 var player_states = ['human', 'human'];
 
@@ -166,4 +166,3 @@ $(`#btn-restart-game`).on('touchstart click', evt => {
 
 render_board(board_current);
 render_player({ game_over: false, player_turn });
-
