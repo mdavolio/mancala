@@ -59,20 +59,15 @@ class AgentRL_QLearning(Agent):
         return boards
 
     @staticmethod
-    def _pick_action(action_values, state, epsilon):
+    def _pick_action(action_values, state, epsilon, seed=451):
         """Pick an action based on the values"""
+        random.seed(seed)
         action_values = AgentRL_QLearning._ensure_exists(action_values, state)
         if random.uniform(0, 1) < epsilon:
-            return random.choice(range(0, 6)), action_values  # pick a random slot
+            # pick a random slot
+            return random.choice(range(0, 6)), action_values
         values = action_values[state]
-        action_max = [1 if i == max(values) else 0 for i in values]
-        action_fraction = [i / sum(action_max) for i in action_max]
-        total = 0
-        pick = random.uniform(0, 0.99999)
-        for action, value in enumerate(action_fraction):
-            total = total + value
-            if total >= pick:
-                return action, action_values
+        return AgentRL_QLearning.max_pick(values, seed), action_values
 
     @staticmethod
     def _take_action(game, action, agent):
@@ -85,7 +80,8 @@ class AgentRL_QLearning(Agent):
         if game.over():
             return (game, (50 if scores_after[0] > scores_after[1] else -50))
         reward = (scores_after[0] - scores_before[0]) - \
-            (scores_after[1] - scores_before[1]) * 0.5 # attenuate other player's score
+            (scores_after[1] - scores_before[1]) * \
+            0.5  # attenuate other player's score
         return game, reward
 
     def learn_policy(
@@ -107,9 +103,10 @@ class AgentRL_QLearning(Agent):
             game = Game()
             state_current = self._state(game)
             action_current, action_values = AgentRL_QLearning._pick_action(
-                action_values, state_current, epsilon)
+                action_values, state_current, epsilon, self._idx)
 
             while not game.over():
+                self._idx = self._idx + 1
                 game, reward = AgentRL_QLearning._take_action(
                     game, action_current, other_agent)
                 state_next = self._state(game)
@@ -123,7 +120,8 @@ class AgentRL_QLearning(Agent):
                 action_next, action_values = AgentRL_QLearning._pick_action(
                     action_values,
                     state_current,
-                    epsilon)
+                    epsilon,
+                    self._idx)
 
                 delta = reward + gamma * \
                     action_values[state_next][action_next] - \
@@ -161,3 +159,29 @@ class AgentRL_QLearning(Agent):
         else:
             dictionary[key] = 1
         return dictionary
+
+    @staticmethod
+    def weighted_pick(values, seed=451):
+        """Make a weighted pick, choosing randomly if all equal"""
+        random.seed(seed)
+
+        # action_max = [1 if i == max(values) else 0 for i in values]
+        values_floor = [value - min(values) for value in values]
+        if all(value == 0 for value in values_floor):
+            return random.choice(range(0, len(values)))
+
+        action_fraction = [value / sum(values_floor) for value in values_floor]
+        total = 0
+        pick = random.uniform(0, 1)
+        for action, value in enumerate(action_fraction):
+            total = total + value
+            if total >= pick:
+                return action
+
+        return 0
+
+    @staticmethod
+    def max_pick(values, seed=451):
+        """Make a weighted pick, choosing randomly if all equal"""
+        values_max = [1 if i == max(values) else 0 for i in values]
+        return AgentRL_QLearning.weighted_pick(values_max, seed)
