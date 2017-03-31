@@ -1,0 +1,27 @@
+# -*- coding: utf-8 -*-
+"""
+Mancala Arena object
+"""
+
+import itertools
+
+
+class Arena():
+    """
+    Pairs agents and compares performance.
+
+    Note that agents must be of a list of tuples of the form:
+    `(agent_str, agent_lambda)`
+
+    Where `agent_str` is the display name of the agent and
+    `agent_lambda` is a lambda function that takes **only** a random
+    seed to create a new object of the agent
+    """
+
+    def __init__(self,
+                 agents=None,
+                 games_to_play=101):
+        self._agents = agents if agents is list else []
+        self._games_to_play = games_to_play
+        # this ensures all agent pairs and pairs with themselves
+        self._combos = itertools.combinations(agents, 2) + zip(agents, agents)
