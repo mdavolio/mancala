@@ -5,7 +5,7 @@ const reset_state = () => {
   player_turn = 1;
 }
 
-const player_types = { 'human': { url: '' }, 'random': { url: '' }, 'max': {url: '' } };
+const player_types = { 'human': { url: '' }, 'random': { url: '' }, 'max': { url: '' } };
 const players = ['one', 'two'];
 var player_states = ['human', 'human'];
 
@@ -125,8 +125,12 @@ const over_cells = (cb) => {
     R.forEach(cb)
   )(14);
 };
+const render_cell = R.pipe(
+  R.repeat(`⚫`),
+  R.join('')
+);
 const cell_from_id = i => $(`#cell-${i_to_str(i)}`);
-const render_board = (board) => over_cells(i => cell_from_id(i).html(board[i] > 0 ? board[i] : ''));
+const render_board = (board) => over_cells(i => cell_from_id(i).html(render_cell(board[i])));
 over_cells(i => cell_from_id(i).on('touchstart click', evt => cell_click(i)));
 
 

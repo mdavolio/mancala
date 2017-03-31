@@ -1,9 +1,10 @@
 p.box {
-  height: 15vh;
-  padding-top: 15vh;
+  height: 28vh;
+  padding-top: 2vh;
   text-align: center;
   outline: 1px grey solid;
   margin: 1vh;
+  word-wrap: break-word;
 }
 
 p.player_one {
