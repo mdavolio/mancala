@@ -20,8 +20,16 @@ class Arena():
 
     def __init__(self,
                  agents=None,
-                 games_to_play=101):
+                 games_to_play=101,
+                 verbose=False):
         self._agents = agents if agents is list else []
         self._games_to_play = games_to_play
         # this ensures all agent pairs and pairs with themselves
-        self._combos = itertools.combinations(agents, 2) + zip(agents, agents)
+        agent_names = list(sorted(map(lambda t: t[0], agents)))
+        combos = list(itertools.combinations(agents, 2)) + list(zip(agents, agents))
+        self._combos = sorted(combos, key=lambda t: t[0][0] + '_' + t[1][0])
+        self._names = agent_names
+
+    def names(self):
+        """Sorted names of agents"""
+        return self._names[:]
