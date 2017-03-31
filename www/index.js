@@ -78,7 +78,7 @@ const update_state_on_response = (e) => {
   }
   board_current = e.board;
   player_turn = e.player_turn;
-  console.log(e);
+  // console.log(e);
   render_player(e);
   render_board(board_current);
   return !e.game_over;
@@ -106,6 +106,7 @@ const cell_click = move => {
 };
 const player_one_score = $('#player_one_score');
 const player_two_score = $('#player_two_score');
+const auto_restart = $('#auto-restart');
 const render_player = (game_state) => {
   const turn_elm = $('#player_turn');
   if (game_state.game_over) {
@@ -114,6 +115,10 @@ const render_player = (game_state) => {
     player_elm.html(+player_elm.html() + 1);
     turn_elm.html(`Player ${player_one_win ? 'One' : 'Two'} Wins!`);
     turn_elm.css('color', player_one_win ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
+    console.log(auto_restart.prop('checked'));
+    if (auto_restart.prop('checked')) {
+      restart_game();
+    }
   } else {
     turn_elm.html(`Player ${game_state.player_turn == 1 ? 'One' : 'Two'}'s Turn`);
     turn_elm.css('color', game_state.player_turn == 1 ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
@@ -151,7 +156,7 @@ const kick_turn = () => {
     return;
   }
   // if not human, kick off the paired wait, of move request/slide down
-  console.log(`Computer's turn!`);
+  // console.log(`Computer's turn!`);
   Promise.all([
     get_move(`/agent/${board_to_str(board_current)}/${player_turn}/${player_states[player_turn - 1]}`),
     count_down_progress(player_turn, player_states[player_turn - 1])
@@ -163,6 +168,10 @@ const kick_turn = () => {
 
 $(`#btn-restart-game`).on('touchstart click', evt => {
   console.log('Restart Game');
+  evt.preventDefault();
+  restart_game();
+});
+const restart_game = () => {
   reset_state();
   render_board(board_current);
   render_player(player_turn);
@@ -172,7 +181,7 @@ $(`#btn-restart-game`).on('touchstart click', evt => {
   player_states = [player_one_type, player_two_type];
   player_turn = 1;
   kick_turn();
-});
+}
 
 render_board(board_current);
 render_player({ game_over: false, player_turn });
