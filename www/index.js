@@ -25,9 +25,11 @@ const update_progress = (player, agent, status, ms = 500) => {
   });
 };
 
+const speed_slider = document.getElementById("agent_speed");
 const count_down_progress = (player, agent) => {
-  return update_progress(player, agent, 100, 80)
-    .then(x => update_progress(player, agent, 0, 150))
+  const value = speed_slider.value;
+  return update_progress(player, agent, 100, value)
+    .then(x => update_progress(player, agent, 0, value * 1.4))
 }
 
 const generate_inputs = (player, types) => {
@@ -102,10 +104,14 @@ const cell_click = move => {
     .then(update_state_on_response)
     .then(kick_again);
 };
+const player_one_score = $('#player_one_score');
+const player_two_score = $('#player_two_score');
 const render_player = (game_state) => {
   const turn_elm = $('#player_turn');
   if (game_state.game_over) {
     const player_one_win = game_state.score[0] > game_state.score[1];
+    const player_elm = player_one_win ? player_one_score : player_two_score;
+    player_elm.html(+player_elm.html() + 1);
     turn_elm.html(`Player ${player_one_win ? 'One' : 'Two'} Wins!`);
     turn_elm.css('color', player_one_win ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
   } else {

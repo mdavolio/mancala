@@ -62,3 +62,7 @@ div.progress-bar {
   width: 0%;
   height: 1em;
 }
+
+input#agent_speed {
+  width: 90%;
+}
