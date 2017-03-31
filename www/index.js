@@ -174,12 +174,11 @@ $(`#btn-restart-game`).on('touchstart click', evt => {
 const restart_game = () => {
   reset_state();
   render_board(board_current);
-  render_player(player_turn);
+  render_player({ game_over: false, player_turn });
 
   const player_one_type = $("input[name=option-one]:checked").val();
   const player_two_type = $("input[name=option-two]:checked").val();
   player_states = [player_one_type, player_two_type];
-  player_turn = 1;
   kick_turn();
 }
 
