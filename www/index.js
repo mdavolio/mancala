@@ -104,6 +104,25 @@ const cell_click = move => {
     .then(update_state_on_response)
     .then(kick_again);
 };
+
+const pulse_score = (elm, color = "#000000", fontSize = '100%', duration = 500) => {
+  return new Promise((resolve, reject) => {
+    elm.velocity({
+      color,
+      fontSize
+    }, {
+        duration,
+        easing: "easeInOutCubic",
+        complete: () => {
+          resolve();
+        }
+      });
+  });
+};
+
+const player_color = is_player_one => is_player_one ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)';
+const player_color_hex = is_player_one => is_player_one ? '#21aeff' : '#ff0000';
+
 const player_one_score = $('#player_one_score');
 const player_two_score = $('#player_two_score');
 const auto_restart = $('#auto-restart');
@@ -114,14 +133,18 @@ const render_player = (game_state) => {
     const player_elm = player_one_win ? player_one_score : player_two_score;
     player_elm.html(+player_elm.html() + 1);
     turn_elm.html(`Player ${player_one_win ? 'One' : 'Two'} Wins!`);
-    turn_elm.css('color', player_one_win ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
-    console.log(auto_restart.prop('checked'));
+    turn_elm.css('color', player_color(player_one_win));
+
+    const player_scoreboard = player_one_win ? player_one_score : player_two_score;
+    pulse_score(player_scoreboard, player_color_hex(player_one_win), '200%')
+      .then(x => pulse_score(player_scoreboard))
+
     if (auto_restart.prop('checked')) {
       restart_game();
     }
   } else {
     turn_elm.html(`Player ${game_state.player_turn == 1 ? 'One' : 'Two'}'s Turn`);
-    turn_elm.css('color', game_state.player_turn == 1 ? 'rgba(33, 174, 255, 0.93)' : 'rgba(255, 0, 0, 0.93)');
+    turn_elm.css('color', player_color(game_state.player_turn == 1));
   }
 }
 
