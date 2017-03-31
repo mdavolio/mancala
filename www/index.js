@@ -27,7 +27,7 @@ const update_progress = (player, agent, status, ms = 500) => {
 
 const speed_slider = document.getElementById("agent_speed");
 const count_down_progress = (player, agent) => {
-  const value = speed_slider.value;
+  const value = 500 - speed_slider.value;
   return update_progress(player, agent, 100, value)
     .then(x => update_progress(player, agent, 0, value * 1.4))
 }
@@ -36,7 +36,7 @@ const generate_inputs = (player, types) => {
   return R.pipe(
     R.mapObjIndexed((val, type) =>
       `<div class="pure-g">
-         <div class="pure-u-1-6 radio-parent">
+         <div class="pure-u-1-6 center">
             <input id="option-${player}-${type}"
             type="radio"
             name="option-${player}"
@@ -46,7 +46,7 @@ const generate_inputs = (player, types) => {
         <div class="pure-u-1-3">
           <p class="player-label">${type}</p>
         </div>
-        <div class="pure-u-1-2">
+        <div class="pure-u-1-2 progress-container">
           <div id="progress-${player}-${type}" class="progress-bar"></div>
         </div>
       </div>

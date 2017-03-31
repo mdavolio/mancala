@@ -8,7 +8,8 @@ p.box {
   height: 28vh;
   padding-top: 2vh;
   text-align: center;
-  outline: 1px grey solid;
+  border-radius: 0.4em;
+  border: 1px solid grey;
   margin: 1vh;
   word-wrap: break-word;
   font-size: 90%;
@@ -27,8 +28,8 @@ p.player_turn {
   height: 12vh;
   padding-top: 13.5vh;
   font-size: 170%;
-  /*text-shadow: 1px 1px 1px #000;*/
   font-weight: bold;
+  margin: 0;
 }
 
 p.hide {
@@ -42,9 +43,6 @@ div.control-box {
 
 .player_box {
   outline: 1px grey solid;
-}
-.player_text {
-  text-align: center;
 }
 .player_one_text {
   color: rgba(33, 174, 255, 0.93);
@@ -62,20 +60,24 @@ h4 {
   margin-bottom: 0.05em;
 }
 
-div.radio-parent {
-  text-align: center;
-}
-
 p.player-label {
   margin: 0.2em;
 }
 
+.progress-container {
+  padding-top: 0.25em;
+}
 div.progress-bar {
-  background: teal;
+  background: #ff7b00;
   width: 0%;
   height: 1em;
+  border-radius: 0.4em;
 }
 
 input#agent_speed {
   width: 90%;
+}
+
+.center {
+  text-align: center;
 }

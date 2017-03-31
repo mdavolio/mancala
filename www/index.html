@@ -52,7 +52,7 @@
           <p class="box player_two" id="cell-13">?</p>
         </div>
         <div class="pure-u-3-4">
-          <p class="box player_turn" id="player_turn">Player Turn</p>
+          <p class="player_turn center" id="player_turn">Player Turn</p>
         </div>
         <div class="pure-u-1-8">
           <p class="box player_one" id="cell-06">?</p>
@@ -95,12 +95,12 @@
       <div class="control-box">
         <p id="server-message"></p>
 
-        <form class="pure-form">
+        <form class="pure-form center">
           <fieldset>
             <legend id="title">Play Mancala!</legend>
             <label for="agent_speed">
               Agent Speed
-              <input id="agent_speed" type="range" min="5" max="500" step="1" value="100"/>
+              <input id="agent_speed" type="range" min="0" max="495" step="1" value="250"/>
             </label>
 
             <button class="pure-button pure-button-primary" id="btn-restart-game">Restart Game</button>
@@ -113,8 +113,8 @@
 
         <div class="pure-g">
           <div class="pure-u-1-2 player_box">
-            <h2 class="player_text player_one_text">Player One</h2>
-            <h2 class="player_text"><span id="player_one_score">0</span></h2>
+            <h2 class="center player_one_text">Player One</h2>
+            <h2 class="center"><span id="player_one_score">0</span></h2>
             <div class="form-wrapper">
               <form class="pure-form" id="player_one_choices">
               </form>
@@ -123,8 +123,8 @@
           </div>
 
           <div class="pure-u-1-2 player_box">
-            <h2 class="player_text player_two_text">Player Two</h2>
-            <h2 class="player_text"><span id="player_two_score">0</span></h2>
+            <h2 class="center player_two_text">Player Two</h2>
+            <h2 class="center"><span id="player_two_score">0</span></h2>
             <div class="form-wrapper">
               <form class="pure-form" id="player_two_choices">
               </form>
