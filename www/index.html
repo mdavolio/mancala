@@ -97,7 +97,7 @@
 
         <form class="pure-form">
           <fieldset>
-            <legend>Controls</legend>
+            <legend id="title">Play Mancala!</legend>
             <label for="agent_speed">
               Agent Speed
               <input id="agent_speed" type="range" min="5" max="500" step="1" value="100"/>
@@ -111,21 +111,26 @@
           </fieldset>
         </form>
 
+        <div class="pure-g">
+          <div class="pure-u-1-2 player_box">
+            <h2 class="player_text player_one_text">Player One</h2>
+            <h3 class="player_text"><span id="player_one_score">0</span></h3>
+            <div class="form-wrapper">
+              <form class="pure-form" id="player_one_choices">
+              </form>
+            </div>
 
-        <h4 class="player_one_text">Player One - <span id="player_one_score">0</span> wins</h4>
-        <div class="form-wrapper">
-          <form class="pure-form" id="player_one_choices">
-          </form>
+          </div>
+
+          <div class="pure-u-1-2 player_box">
+            <h2 class="player_text player_two_text">Player Two</h2>
+            <h3 class="player_text"><span id="player_two_score">0</span></h3>
+            <div class="form-wrapper">
+              <form class="pure-form" id="player_two_choices">
+              </form>
+            </div>
+          </div>
         </div>
-
-        <h4 class="player_two_text">Player Two - <span id="player_two_score">0</span> wins</h4>
-        <div class="form-wrapper">
-          <form class="pure-form" id="player_two_choices">
-          </form>
-        </div>
-
-
-        <hr />
 
       </div>
     </div>

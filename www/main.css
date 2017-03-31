@@ -1,3 +1,9 @@
+#title {
+  font-size: 2em;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
 p.box {
   height: 28vh;
   padding-top: 2vh;
@@ -34,6 +40,12 @@ div.control-box {
   overflow: scroll;
 }
 
+.player_box {
+  outline: 1px grey solid;
+}
+.player_text {
+  text-align: center;
+}
 .player_one_text {
   color: rgba(33, 174, 255, 0.93);
 }
