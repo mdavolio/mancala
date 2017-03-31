@@ -5,6 +5,7 @@ p.box {
   outline: 1px grey solid;
   margin: 1vh;
   word-wrap: break-word;
+  font-size: 90%;
 }
 
 p.player_one {
@@ -18,7 +19,7 @@ p.player_two {
 p.player_turn {
   outline: none;
   height: 12vh;
-  padding-top: 9vh;
+  padding-top: 13.5vh;
   font-size: 170%;
   /*text-shadow: 1px 1px 1px #000;*/
   font-weight: bold;
