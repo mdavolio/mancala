@@ -57,3 +57,34 @@ class Arena():
     def results(self):
         """Sorted results of agents"""
         return self._results[:]
+
+    def csv_header(self):
+        """A header row for a csv result"""
+        return ['opponent'] + self.names()
+
+    def csv_results_lists(self):
+        """
+        List of Lists, corresponding to the player 2 results
+        The first element is the opponent type
+        """
+        return list(map(self._row_from_name, self._names))
+
+    def _row_from_name(self, name):
+        """Returns a row of results, each from the perspective of """
+        results_for_player_2 = list(
+            filter(lambda t: t[0] == name or t[1] == name, self._results))
+        results_fixed_for_row = list(map(lambda t: Arena._fix_for_row(
+            name, t, self._games_to_play), results_for_player_2))
+        results_ordered = list(
+            sorted(results_fixed_for_row, key=lambda t: t[0]))
+        results_final = list(map(lambda t: t[1], results_ordered))
+        return [name] + results_final
+
+    @staticmethod
+    def _fix_for_row(name, match_tuple, game_count):
+        """Reduce a row to the player 2 and note the correct win percentage for player 1"""
+        if match_tuple[0] == name and match_tuple[1] != name:
+            win_percent = (game_count - match_tuple[2]) / game_count
+            return (match_tuple[1], win_percent)
+        # if match_tuple[0] != name and match_tuple[1] == name:
+        return (match_tuple[0], match_tuple[2] / game_count)

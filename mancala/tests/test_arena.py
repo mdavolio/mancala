@@ -61,5 +61,33 @@ class TestArenaResults(unittest.TestCase):
         ])
 
 
+class TestArenaCsv(unittest.TestCase):
+    """Test the arena csv tools"""
+
+    def test_header(self):
+        """Define the arena with one version"""
+        arena = Arena([
+            ("Random A", lambda seed: AgentRandom(seed)),
+            ("Random C", lambda seed: AgentRandom(seed)),
+            ("Random B", lambda seed: AgentRandom(seed))
+        ], 5)
+        self.assertListEqual(arena.csv_header(), [
+                             "opponent", "Random A", "Random B", "Random C"])
+
+    def test_list(self):
+        """Define the arena with one version"""
+        arena = Arena([
+            ("Random A", lambda seed: AgentRandom(seed)),
+            ("Random C", lambda seed: AgentRandom(seed)),
+            ("Random B", lambda seed: AgentRandom(seed))
+        ], 5)
+        self.assertEqual(len(arena.csv_results_lists()), 3)
+        self.assertListEqual(arena.csv_results_lists(), [
+            ['Random A', 0.6, 0.4, 0.6],
+            ['Random B', 0.6, 0.2, 0.2],
+            ['Random C', 0.4, 0.8, 0.2]
+        ])
+
+
 if __name__ == '__main__':
     unittest.main()
