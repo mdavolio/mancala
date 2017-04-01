@@ -21,8 +21,7 @@ class Arena():
 
     def __init__(self,
                  agents=None,
-                 games_to_play=101,
-                 verbose=False):
+                 games_to_play=101):
         self._agents = agents if agents is list else []
         self._games_to_play = games_to_play
         self._names = list(sorted(map(lambda t: t[0], agents)))
