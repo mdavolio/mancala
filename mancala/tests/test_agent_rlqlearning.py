@@ -15,8 +15,8 @@ class TestAgentRLQLearning(unittest.TestCase):
     def test_learning_small(self):
         """Do some small learning with Random opponent"""
         agent = AgentQBinary()
-        values = agent.learn_policy(2)
-        self.assertEqual(len(values), 41)
+        values = agent.do_learn(epochs=2, games_per_epoch=5)
+        self.assertEqual(len(values), 160)
         for action_values in values.values():
             self.assertEqual(len(action_values), 6)
 

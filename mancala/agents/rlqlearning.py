@@ -13,28 +13,76 @@ from ..game import Game
 class AgentRL_QLearning(Agent):
     """Reinforcement Q Learning Class for play Mancala."""
 
-    def __init__(self, seed=451):
+    def __init__(self, seed=451, action_values=None):
         self._seed = seed
         self._idx = 0
+        self._action_values = {} if action_values is None else action_values
 
     def _state(self, game):
         """Return the derived state from a game"""
         raise NotImplementedError("Class {} doesn't implement _state()".format(
             self.__class__.__name__))
 
+    def do_learn(self,
+                 action_values=None,
+                 epochs=100,
+                 games_per_epoch=100,
+                 other_agent=AgentRandom(451),
+                 alpha=0.1,
+                 gamma=0.1,
+                 decay=0.1,  # lambda
+                 epsilon=0.1):
+        """Do learning for a specific class"""
+        raise NotImplementedError("Class {} doesn't implement do_learn()".format(
+            self.__class__.__name__))
+
     def _move(self, game):
         """Return the move"""
         self._idx = self._idx + 1
         random.seed(self._seed + self._idx)
+        game_clone, rotation_flag = game.clone_turn()
+        state_current = self._state(game_clone)
 
-        options = Agent.valid_indices(game)
-        if len(options) < 1:
-            return 0
+        if state_current not in self._action_values:
+            # guess if state unknown
+            options = Agent.valid_indices(game)
+            if len(options) < 1:
+                return 0  # TODO: conform this to standard
+            return random.choice(options)
 
-        return random.choice(options)
+        action_value = self._action_values[state_current]
+        pick = AgentRL_QLearning.weighted_pick(action_value)
 
-    # @staticmethod
-    # def learn(other_agent=AgentRandom(451)):
+        final_move = Game.rotate_board(rotation_flag, pick)
+        return final_move
+
+    def learn(self,
+              create_new_agent,
+              action_values=None,
+              epochs=100,
+              games_per_epoch=100,
+              other_agent=AgentRandom(451),
+              alpha=0.1,
+              gamma=0.1,
+              decay=0.1,  # lambda
+              epsilon=0.1):
+        """Learn action values over epochs"""
+        for epoch in range(epochs):
+            self._idx = self._idx + 1
+            agent = other_agent if action_values is None else \
+                create_new_agent(self._idx + 1, action_values)
+            action_values = self._learn_values(action_values,
+                                               games_per_epoch,
+                                               agent,
+                                               alpha,
+                                               gamma,
+                                               decay,  # lambda
+                                               epsilon)
+            if epoch % 10 == 0:
+                print("Epoch {} Complete".format(epoch))
+
+        return action_values
+
     @staticmethod
     def generate_states(
             games=100,
@@ -84,10 +132,10 @@ class AgentRL_QLearning(Agent):
             0.5  # attenuate other player's score
         return game, reward
 
-    def learn_policy(
+    def _learn_values(
             self,
-            games_to_play=100,
             action_values=None,
+            games_to_play=100,
             other_agent=AgentRandom(451),
             alpha=0.1,
             gamma=0.1,
@@ -95,15 +143,15 @@ class AgentRL_QLearning(Agent):
             epsilon=0.1):
         """Generate an updated action_values from playing"""
         action_values = {} if action_values is None else action_values  # Q
-        eligibility_trace = {}  # e
         self._idx = self._idx + 1
         random.seed(self._seed + self._idx)
 
-        for _ in range(0, games_to_play):
+        for _ in range(games_to_play):
             game = Game()
             state_current = self._state(game)
             action_current, action_values = AgentRL_QLearning._pick_action(
                 action_values, state_current, epsilon, self._idx)
+            eligibility_trace = {}  # reset on every game
 
             while not game.over():
                 self._idx = self._idx + 1
@@ -133,7 +181,12 @@ class AgentRL_QLearning(Agent):
                     state_current][action_current] + 1
 
                 for state in action_values.keys():
-                    for idx in range(0, 6):
+                    for idx in range(6):
+                        # only bother to decay an eligibility trace if we have it
+                        # otherwise it's zero
+                        if state not in eligibility_trace:
+                            continue
+
                         action_values[state][idx] = action_values[state][idx] \
                             + alpha * delta * eligibility_trace[state][idx]
                         eligibility_trace[state][idx] = gamma * \
@@ -178,7 +231,7 @@ class AgentRL_QLearning(Agent):
             if total >= pick:
                 return action
 
-        return 0
+        return 0  # TODO: should this raise?
 
     @staticmethod
     def max_pick(values, seed=451):
