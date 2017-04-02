@@ -7,37 +7,44 @@ Maximize score: test each possible legal move, creating list of score after
                 each move, chooses move that maximizes score, if tie random
 """
 
-from .agent import Agent
-from mancala.game import Game
 import random
+from mancala.game import Game
+from .agent import Agent
 
 
 class AgentMax(Agent):
+    """Agent which picks a move by the next score"""
 
     def __init__(self, seed=451):
         self._seed = seed
         self._idx = 0
 
     @staticmethod
-    def _checkMax(move_test, game):
-
+    def _score_of_move(move_test, game):
+        """Makes the move and returns the score of player one"""
         game.move(move_test)
-
-        return game.score()[game.turn_player() - 1]
+        return game.score()[0]
 
     def _move(self, game):
         """Return a random valid move"""
         self._idx = self._idx + 1
         random.seed(self._seed + self._idx)
-        myGame, rot_flag = game.clone_turn()
-        
-        options = Agent.valid_indices(myGame)
+        game_clone, rot_flag = game.clone_turn()
 
-        max_score = list(map(lambda move_slot: AgentMax._checkMax(move_slot, game.clone()), options))
-        # return max_score
+        move_options = Agent.valid_indices(game_clone)
 
-        maxs = max(max_score)
-        final_opts = [i for i, j in enumerate(max_score) if j == maxs]
+        available_scores = list(
+            map(lambda move_slot:
+                AgentMax._score_of_move(
+                    move_slot,
+                    game_clone.clone()
+                ),
+                move_options))
 
-        final_move = Game.rotate_board(rot_flag, random.choice(final_opts))
+        score_max = max(available_scores)
+        final_options = [move for score, move in
+                         zip(available_scores, move_options)
+                         if score == score_max]
+
+        final_move = Game.rotate_board(rot_flag, random.choice(final_options))
         return final_move
