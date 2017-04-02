@@ -8,6 +8,7 @@ import random
 from .agent import Agent
 from .random import AgentRandom
 from ..game import Game
+from ..arena import Arena
 
 
 class AgentRL_QLearning(Agent):
@@ -43,15 +44,16 @@ class AgentRL_QLearning(Agent):
         game_clone, rotation_flag = game.clone_turn()
         state_current = self._state(game_clone)
 
+        options = Agent.valid_indices(game_clone)
+        if len(options) < 1:
+            return 0  # TODO: conform this to standard
+
         if state_current not in self._action_values:
             # guess if state unknown
-            options = Agent.valid_indices(game)
-            if len(options) < 1:
-                return 0  # TODO: conform this to standard
-            return random.choice(options)
-
-        action_value = self._action_values[state_current]
-        pick = AgentRL_QLearning.weighted_pick(action_value)
+            pick = random.choice(options)
+        else:
+            action_value = self._action_values[state_current]
+            pick = AgentRL_QLearning.weighted_pick_filter(action_value, options)
 
         final_move = Game.rotate_board(rotation_flag, pick)
         return final_move
@@ -65,8 +67,10 @@ class AgentRL_QLearning(Agent):
               alpha=0.1,
               gamma=0.1,
               decay=0.1,  # lambda
-              epsilon=0.1):
+              epsilon=0.1,
+              progress_updates=False):
         """Learn action values over epochs"""
+        updates = []
         for epoch in range(epochs):
             self._idx = self._idx + 1
             agent = other_agent if action_values is None else \
@@ -78,8 +82,15 @@ class AgentRL_QLearning(Agent):
                                                gamma,
                                                decay,  # lambda
                                                epsilon)
-            if epoch % 10 == 0:
+            if epoch % 1000 == 0:
                 print("Epoch {} Complete".format(epoch))
+                arena = Arena([
+                    ("Random", lambda seed: AgentRandom(seed)),
+                    ("QLearner", lambda seed: create_new_agent(
+                        seed, action_values))
+                ], 101)
+                results = arena.results()
+                print(results)
 
         return action_values
 
@@ -212,6 +223,16 @@ class AgentRL_QLearning(Agent):
         else:
             dictionary[key] = 1
         return dictionary
+
+    @staticmethod
+    def weighted_pick_filter(values, valid_indices, seed=451):
+        """Make a weighted pick, choosing randomly if all equal. Only uses valid indices."""
+        values_available = [(idx, value) for idx, value in enumerate(
+            values) if idx in valid_indices]
+        values_valid = [value for idx, value in values_available]
+        picked_valid = AgentRL_QLearning.weighted_pick(values_valid, seed)
+        real_index = values_available[picked_valid][0]
+        return real_index
 
     @staticmethod
     def weighted_pick(values, seed=451):

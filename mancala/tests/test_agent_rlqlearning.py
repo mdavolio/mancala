@@ -4,9 +4,7 @@ Tests for the abstract agent class
 """
 
 import unittest
-from mancala.agents.random import AgentRandom
 from mancala.agents.reinforcementlearning.qbinary import AgentQBinary
-from mancala.game import Game
 
 
 class TestAgentRLQLearning(unittest.TestCase):
@@ -32,6 +30,20 @@ class TestAgentRLQLearning(unittest.TestCase):
         pick = AgentQBinary.weighted_pick(values, 5)
         self.assertEqual(pick, 2)
         pick = AgentQBinary.weighted_pick(values, 6)
+        self.assertEqual(pick, 2)
+
+    def test_weighted_pick_filter(self):
+        """Make weighted picks with a filter of valid choices"""
+        values = [1, 2, 5]
+        pick = AgentQBinary.weighted_pick_filter(values, [0, 1, 2], 1)
+        self.assertEqual(pick, 1)
+        pick = AgentQBinary.weighted_pick_filter(values, [1, 2], 2)
+        self.assertEqual(pick, 2)
+        pick = AgentQBinary.weighted_pick_filter(values, [0], 3)
+        self.assertEqual(pick, 0)
+        pick = AgentQBinary.weighted_pick_filter(values, [1], 5)
+        self.assertEqual(pick, 1)
+        pick = AgentQBinary.weighted_pick_filter(values, [2], 6)
         self.assertEqual(pick, 2)
 
     def test_max_pick(self):
