@@ -69,9 +69,9 @@ class AgentRL_QLearning(Agent):
               gamma=0.1,
               decay=0.1,  # lambda
               epsilon=0.1,
-              progress_updates=False):
+              update_period=10,
+              update_callback=None):
         """Learn action values over epochs"""
-        updates = []
         for epoch in range(epochs):
             self._idx = self._idx + 1
             agent = other_agent if action_values is None else \
@@ -83,7 +83,9 @@ class AgentRL_QLearning(Agent):
                                                gamma,
                                                decay,  # lambda
                                                epsilon)
-            if epoch % 10 == 0:
+            if update_callback is None:
+                continue
+            if epoch % update_period == 0:
                 arena = Arena([
                     ("Random", lambda seed: AgentRandom(seed)),
                     ("QLearner", lambda seed: create_new_agent(
@@ -93,8 +95,10 @@ class AgentRL_QLearning(Agent):
                 result = [result for result in results if
                           result[0] == "Random" and result[1] == "QLearner"][0][2]
                 win_rate_v_random = round(100 * (501 - result) / 501, 2)
-                print("Epoch {: >3} Complete | Win Rate: {: >4}% | States: {: 5}".format(
-                    epoch, win_rate_v_random, len(action_values)))
+                msg = "Epoch {: >3} Complete | Win Rate: {: >4}% | States: {: 5}".format(
+                    epoch, win_rate_v_random, len(action_values))
+                update_callback(
+                    (epoch, win_rate_v_random, len(action_values), msg))
 
         return action_values
 
