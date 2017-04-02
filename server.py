@@ -34,6 +34,7 @@ def board_str_to_game(board, player_turn):
     game = Game(board_arr, player_turn)
     return game
 
+
 def agent_play(game, agent_str):
     """Play a game, based on agent string. Or no move."""
     if agent_str == "random":
@@ -42,8 +43,9 @@ def agent_play(game, agent_str):
         game.move(AGENT_MAX.move(game))
     return game
 
-@FLASKAPP.route('/')
-def show():
+
+@FLASKAPP.route('/time')
+def time():
     """Returns current time"""
     return jsonify({'current_time': datetime.datetime.utcnow().isoformat()})
 
@@ -87,6 +89,12 @@ def play_agent(board, player_turn, agent):
         'current_time': datetime.datetime.utcnow().isoformat()
     })
 
+
+@FLASKAPP.route('/')
+def serve_index():
+    """Serve index"""
+    full_path = os.path.join(os.getcwd(), 'www')
+    return send_from_directory(full_path, 'index.html')
 
 @FLASKAPP.route('/<path:filename>')
 def serve_static(filename):
