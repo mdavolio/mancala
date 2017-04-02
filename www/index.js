@@ -62,12 +62,20 @@ R.map((player) => {
   $(`#player_${player}_choices`).html(generate_inputs(player, player_types));
 }, players);
 
+var latest_url = '';
 const fetch = (url) => {
+  latest_url = url;
   return new Promise((resolve, reject) => {
     $.ajax({
       url,
       error: reject,
-      success: resolve
+      success: (data) => {
+        if (url != latest_url) {
+          reject(false);
+        } else {
+          resolve(data);
+        }
+      }
     });
   });
 };
@@ -87,6 +95,10 @@ const update_state_on_response = (e) => {
 const get_move = (url) => {
   return fetch(url)
     .catch(e => {
+      if (e === false) {
+        console.log('Caught failure');
+        return false;
+      }
       console.error(e);
       $('#server-message').html(e.responseJSON.error);
       return false;
