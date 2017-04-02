@@ -53,7 +53,8 @@ class AgentRL_QLearning(Agent):
             pick = random.choice(options)
         else:
             action_value = self._action_values[state_current]
-            pick = AgentRL_QLearning.weighted_pick_filter(action_value, options)
+            pick = AgentRL_QLearning.weighted_pick_filter(
+                action_value, options)
 
         final_move = Game.rotate_board(rotation_flag, pick)
         return final_move
@@ -82,15 +83,18 @@ class AgentRL_QLearning(Agent):
                                                gamma,
                                                decay,  # lambda
                                                epsilon)
-            if epoch % 1000 == 0:
-                print("Epoch {} Complete".format(epoch))
+            if epoch % 10 == 0:
                 arena = Arena([
                     ("Random", lambda seed: AgentRandom(seed)),
                     ("QLearner", lambda seed: create_new_agent(
                         seed, action_values))
-                ], 101)
+                ], 501)
                 results = arena.results()
-                print(results)
+                result = [result for result in results if
+                          result[0] == "Random" and result[1] == "QLearner"][0][2]
+                win_rate_v_random = round(100 * (501 - result) / 501, 2)
+                print("Epoch {: >3} Complete | Win Rate: {: >4}% | States: {: 5}".format(
+                    epoch, win_rate_v_random, len(action_values)))
 
         return action_values
 
