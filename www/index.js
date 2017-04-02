@@ -86,7 +86,6 @@ const update_state_on_response = (e) => {
   }
   board_current = e.board;
   player_turn = e.player_turn;
-  // console.log(e);
   render_player(e);
   render_board(board_current);
   return !e.game_over;
@@ -106,7 +105,6 @@ const get_move = (url) => {
 }
 
 const cell_click = move => {
-  console.log(`Click ${move}`);
   if (!human_turn()) {
     console.log('Ignoring click');
     return;
