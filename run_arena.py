@@ -3,6 +3,7 @@ import argparse
 import csv
 
 from mancala.agents.random import AgentRandom
+from mancala.agents.max import AgentMax
 from mancala.arena import Arena
 
 
@@ -21,8 +22,9 @@ ARENA = Arena([
     # first in the tuple is the readable name
     # second is a lambda that ONLY takes a random seed. This can be discarded
     # if the the Agent does not require a seed
-    ("Random", lambda seed: AgentRandom(seed))
-], 500)
+    ("Random", lambda seed: AgentRandom(seed)),
+    ('Max', lambda seed: AgentMax(seed))
+], 1000000)
 
 print('Run the arena for: ', ARENA.csv_header())
 

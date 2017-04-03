@@ -11,6 +11,7 @@ from mancala.utility import split_string
 from mancala.game import Game
 from mancala.agents.random import AgentRandom
 from mancala.agents.max import AgentMax
+from mancala.agents.exact import AgentExact
 
 
 FLASKAPP = Flask(__name__)
@@ -19,6 +20,7 @@ FLASKAPP.config.from_object(__name__)
 # Define agents
 AGENT_RANDOM = AgentRandom(454)
 AGENT_MAX = AgentMax(454)
+AGENT_EXACT = AgentExact(454)
 
 
 def board_str_to_game(board, player_turn):
@@ -41,6 +43,8 @@ def agent_play(game, agent_str):
         game.move(AGENT_RANDOM.move(game))
     elif agent_str == 'max':
         game.move(AGENT_MAX.move(game))
+    elif agent_str == 'exact':
+        game.move(AGENT_EXACT.move(game))
     return game
 
 
