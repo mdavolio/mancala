@@ -61,6 +61,28 @@ class TestArenaResults(unittest.TestCase):
         ])
 
 
+class TestArenaSingleShot(unittest.TestCase):
+    """Test the arena single shot tools"""
+
+    def test_one(self):
+        """Test only one agent against another"""
+        wins = Arena.compare_agents(
+            lambda seed: AgentRandom(seed),
+            lambda seed: AgentRandom(seed),
+            5
+        )
+        self.assertEqual(wins, 2)
+
+    def test_float(self):
+        """Test only one agent against another"""
+        wins = Arena.compare_agents_float(
+            lambda seed: AgentRandom(seed),
+            lambda seed: AgentRandom(seed),
+            5
+        )
+        self.assertAlmostEqual(wins, 2 / 5, 5)
+
+
 class TestArenaCsv(unittest.TestCase):
     """Test the arena csv tools"""
 
