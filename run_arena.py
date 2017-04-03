@@ -7,7 +7,7 @@ from mancala.arena import Arena
 
 
 PARSER = argparse.ArgumentParser(
-    description='Run the arena with availabe agents')
+    description='Run the arena with available agents')
 
 PARSER.add_argument('--output', type=str, default='arena.results.csv',
                     help='Path to write arena results')
@@ -32,6 +32,3 @@ with open(ARGS.output, 'w') as f:
     WRITER.writerows(ARENA.csv_results_lists())
 
 print('Complete')
-# print(AgentRandom().move(4))
-
-# Agent().move()
