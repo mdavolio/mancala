@@ -14,9 +14,18 @@ class TestAgentRLQLearning(unittest.TestCase):
         """Do some small learning with Random opponent"""
         agent = AgentQBinary()
         values = agent.do_learn(epochs=2, games_per_epoch=5)
-        self.assertEqual(len(values), 160)
+        self.assertEqual(len(values), 192)
         for action_values in values.values():
             self.assertEqual(len(action_values), 6)
+
+    def _callback(self, tup):
+        self.assertEqual(len(tup), 4)
+
+    def test_learning_callback(self):
+        """Do some small learning with Random opponent"""
+        agent = AgentQBinary()
+        values = agent.do_learn(epochs=2, games_per_epoch=5, update_period=1,
+                                update_callback=lambda tup: self._callback(tup))
 
     def test_weighted_pick(self):
         """Make weighted picks"""

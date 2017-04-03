@@ -86,15 +86,10 @@ class AgentRL_QLearning(Agent):
             if update_callback is None:
                 continue
             if epoch % update_period == 0:
-                arena = Arena([
-                    ("Random", lambda seed: AgentRandom(seed)),
-                    ("QLearner", lambda seed: create_new_agent(
-                        seed, action_values))
-                ], 501)
-                results = arena.results()
-                result = [result for result in results if
-                          result[0] == "Random" and result[1] == "QLearner"][0][2]
-                win_rate_v_random = round(100 * (501 - result) / 501, 2)
+                win_rate_v_random = Arena.compare_agents_float(
+                    lambda seed: create_new_agent(seed, action_values),
+                    lambda seed: AgentRandom(seed),
+                    51)
                 msg = "Epoch {: >3} Complete | Win Rate: {: >4}% | States: {: 5}".format(
                     epoch, win_rate_v_random, len(action_values))
                 update_callback(

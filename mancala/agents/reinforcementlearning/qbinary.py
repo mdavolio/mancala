@@ -28,7 +28,9 @@ class AgentQBinary(AgentRL_QLearning):
                  alpha=0.1,
                  gamma=0.1,
                  decay=0.1,  # lambda
-                 epsilon=0.1):
+                 epsilon=0.1,
+                 update_period=10,
+                 update_callback=None):
         """Do learning for QBinary"""
         return self.learn(lambda seed, a_vs: AgentQBinary(seed, a_vs),
                           action_values,
@@ -38,4 +40,6 @@ class AgentQBinary(AgentRL_QLearning):
                           alpha,
                           gamma,
                           decay,  # lambda
-                          epsilon)
+                          epsilon,
+                          update_period,
+                          update_callback)
