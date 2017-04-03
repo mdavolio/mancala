@@ -32,7 +32,9 @@ class AgentRL_QLearning(Agent):
                  alpha=0.1,
                  gamma=0.1,
                  decay=0.1,  # lambda
-                 epsilon=0.1):
+                 epsilon=0.1,
+                 update_period=10,
+                 update_callback=None):
         """Do learning for a specific class"""
         raise NotImplementedError("Class {} doesn't implement do_learn()".format(
             self.__class__.__name__))
@@ -87,11 +89,12 @@ class AgentRL_QLearning(Agent):
                 continue
             if epoch % update_period == 0:
                 win_rate_v_random = Arena.compare_agents_float(
-                    lambda seed: create_new_agent(seed, action_values),
-                    lambda seed: AgentRandom(seed),
+                    lambda seed: create_new_agent(
+                        seed + self._idx, action_values),
+                    lambda seed: AgentRandom(seed + self._idx),
                     51)
-                msg = "Epoch {: >3} Complete | Win Rate: {: >4}% | States: {: 5}".format(
-                    epoch, win_rate_v_random, len(action_values))
+                msg = "Epoch {: >3} Complete | Win Rate: {: >6}% | States: {: 5}".format(
+                    epoch, round(win_rate_v_random * 100, 2), len(action_values))
                 update_callback(
                     (epoch, win_rate_v_random, len(action_values), msg))
 
