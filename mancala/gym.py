@@ -6,6 +6,7 @@ Mancala Gym object
 import time
 
 from mancala.agents.reinforcementlearning.qbinary import AgentQBinary
+from mancala.agents.reinforcementlearning.qquad import AgentQQuad
 from mancala.agents.random import AgentRandom
 
 
@@ -14,19 +15,19 @@ class Gym():
     Wrapper functions to train agents
 
     All agents must accept:
-        * start_data - A dict of starting data, whatever the agent could use to start training, or None
+        * start_data - A dict of starting data, whatever the agent uses to start training, or None
         * config_data - A dict of any configuration data
     And return only
         * end_data - A dict of resulting data. This may be capable of feeding back as start_data
     """
 
     _rl_config_defaults = {
-        "epochs": 5,
-        "games_per_epoch": 100,
-        "alpha": 0.1,
+        "epochs": 15,
+        "games_per_epoch": 1000,
+        "alpha": 0.3,
         "gamma": 0.1,
-        "decay": 0.1,
-        "epsilon": 0.1
+        "decay": 0.5,
+        "epsilon": 0.2
     }
 
     @staticmethod
@@ -35,6 +36,13 @@ class Gym():
         Work with RL QBinary
         """
         return Gym._learn_rl(AgentQBinary(), starting_data, config_data, verbose)
+
+    @staticmethod
+    def qquad(starting_data, config_data=None, verbose=False):
+        """
+        Work with RL QQuad
+        """
+        return Gym._learn_rl(AgentQQuad(), starting_data, config_data, verbose)
 
     @staticmethod
     def _learn_rl(agent, starting_data, config_data=None, verbose=False):
