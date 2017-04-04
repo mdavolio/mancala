@@ -93,7 +93,7 @@ class AgentRL_QLearning(Agent):
                     lambda seed: create_new_agent(
                         seed + self._idx, action_values),
                     lambda seed: AgentRandom(seed + self._idx),
-                    51)
+                    200)
                 msg = "Epoch {: >3} Complete | Win Rate: {: >6}% | States: {: 5}".format(
                     epoch, round(win_rate_v_random * 100, 2), len(action_values))
                 update_callback(
@@ -144,10 +144,10 @@ class AgentRL_QLearning(Agent):
             game.move(agent.move(game))
         scores_after = game.score()
         if game.over():
-            return (game, (50 if scores_after[0] > scores_after[1] else -50))
+            return (game, (100 if scores_after[0] > scores_after[1] else -100))
         reward = (scores_after[0] - scores_before[0]) - \
             (scores_after[1] - scores_before[1]) * \
-            0.5  # attenuate other player's score
+            0.2  # attenuate other player's score
         return game, reward
 
     def _learn_values(
