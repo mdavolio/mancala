@@ -50,9 +50,9 @@ class Gym():
         Wrapper for all RL Gym operations
         """
         config_data = Gym._rl_config_defaults if config_data is None else config_data
-        config_data = {**config_data, **Gym._rl_config_defaults}
+        config_data = {**Gym._rl_config_defaults, **config_data}
 
-        action_values = None if starting_data is None else starting_data.action_values
+        action_values = None if starting_data is None else starting_data["action_values"]
 
         action_values_new = agent.do_learn(
             action_values,
@@ -63,7 +63,7 @@ class Gym():
             config_data["gamma"],
             config_data["decay"],
             config_data["epsilon"],
-            1,
+            10,
             Gym.report if verbose else lambda tup: tup
         )
 
