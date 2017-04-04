@@ -13,6 +13,7 @@ from ..arena import Arena
 
 class AgentRL_QLearning(Agent):
     """Reinforcement Q Learning Class for play Mancala."""
+    _ACTION_RANGE = list(range(6))
 
     def __init__(self, seed=451, action_values=None):
         self._seed = seed
@@ -197,13 +198,10 @@ class AgentRL_QLearning(Agent):
                 eligibility_trace[state_current][action_current] = eligibility_trace[
                     state_current][action_current] + 1
 
-                for state in action_values.keys():
-                    for idx in range(6):
-                        # only bother to decay an eligibility trace if we have it
-                        # otherwise it's zero
-                        if state not in eligibility_trace:
-                            continue
-
+                for state in eligibility_trace.keys():
+                    # only bother to decay an eligibility trace if we have it
+                    # otherwise it's zero
+                    for idx in AgentRL_QLearning._ACTION_RANGE:
                         action_values[state][idx] = action_values[state][idx] \
                             + alpha * delta * eligibility_trace[state][idx]
                         eligibility_trace[state][idx] = gamma * \
