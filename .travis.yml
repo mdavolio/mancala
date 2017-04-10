@@ -1,0 +1,11 @@
+language: python
+python:
+  - "3.4"
+  - "3.5"
+  - "3.6"
+# command to install dependencies
+install:
+# command to run tests
+script:
+  - make test
+  - coverage run --source=mancala mancala/tests
