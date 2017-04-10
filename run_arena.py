@@ -21,7 +21,8 @@ ARENA = Arena([
     # first in the tuple is the readable name
     # second is a lambda that ONLY takes a random seed. This can be discarded
     # if the the Agent does not require a seed
-    ("Random", lambda seed: AgentRandom(seed))
+    ("Random", lambda seed: AgentRandom(seed)),
+    
 ], 500)
 
 print('Run the arena for: ', ARENA.csv_header())

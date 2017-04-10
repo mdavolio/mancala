@@ -64,10 +64,10 @@ class AgentMinMax(Agent):
     @staticmethod
     def _min_max(depth, game, player):
 
-        move_options = Agent.valid_indices(game)
-
-        if depth == 0 or len(move_options) < 1:
+        if depth == 0:
             return -AgentMinMax._evaluate_board(game)
+
+        move_options = Agent.valid_indices(game)
 
         available_scores = list(
             map(lambda move_slot:
