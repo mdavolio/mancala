@@ -8,4 +8,4 @@ install:
 # command to run tests
 script:
   - make test
-  - coverage run --source=mancala mancala/tests
+  - coverage run --source=mancala mancala/test_util.py test
