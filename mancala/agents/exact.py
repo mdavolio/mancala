@@ -21,9 +21,15 @@ class AgentExact(Agent):
 
     @staticmethod
     def _hole_to_score(idx, game):
-        if (game.board[idx] % 13) == (6 - idx):
+        if (game.board()[idx] % 13) == (6 - idx):
             return 1
         return 0
+
+    @staticmethod
+    def _score_of_move(move_test, game):
+        """Makes the move and returns the score of player one"""
+        game.move(move_test)
+        return game.score()[0]
 
     def _move(self, game):
         '''Return move which ends in score hole'''
@@ -33,7 +39,6 @@ class AgentExact(Agent):
 
         move_options = Agent.valid_indices(game_clone)
 
-
         distance = list(map(lambda move_slot:
                             AgentExact._hole_to_score(
                                 move_slot,
@@ -41,7 +46,24 @@ class AgentExact(Agent):
                             ),
                             move_options))
 
-        final_options = [i for i, j in enumerate(distance) if j == 1]
+        available_scores = list(map(lambda move_slot:
+                                    AgentExact._score_of_move(
+                                        move_slot,
+                                        game_clone.clone()
+                                    ),
+                                    move_options))
 
-        final_move = Game.rotate_board(rot_flag, random.choice(final_options))
+        final_options = [move for exact, move in
+                         zip(distance, move_options)
+                         if exact == 1]
+
+        if not final_options:
+            score_max = max(available_scores)
+            final_options = [move for score, move in
+                             zip(available_scores, move_options)
+                             if score == score_max]
+            final_move = Game.rotate_board(rot_flag, random.choice(final_options))
+        else:
+            final_move = Game.rotate_board(rot_flag, max(final_options))
+
         return final_move
