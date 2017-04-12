@@ -7,6 +7,7 @@ import time
 
 from mancala.agents.reinforcementlearning.qbinary import AgentQBinary
 from mancala.agents.reinforcementlearning.qquad import AgentQQuad
+from mancala.agents.reinforcementlearning.qmod import AgentQMod
 from mancala.agents.random import AgentRandom
 
 
@@ -22,7 +23,7 @@ class Gym():
     """
 
     _rl_config_defaults = {
-        "epochs": 15,
+        "epochs": 30,
         "games_per_epoch": 1000,
         "alpha": 0.3,
         "gamma": 0.1,
@@ -43,6 +44,13 @@ class Gym():
         Work with RL QQuad
         """
         return Gym._learn_rl(AgentQQuad(), starting_data, config_data, verbose)
+
+    @staticmethod
+    def qmod(starting_data, config_data=None, verbose=False):
+        '''
+        Works with RL QMod
+        '''
+        return Gym._learn_rl(AgentQMod(), starting_data, config_data, verbose)
 
     @staticmethod
     def _learn_rl(agent, starting_data, config_data=None, verbose=False):

@@ -58,6 +58,8 @@ def handle_agent(input_data, config_data, agent_name, verbose):
         return Gym.qbinary(input_data, config_data, verbose)
     if agent == "qquad":
         return Gym.qquad(input_data, config_data, verbose)
+    if agent == 'qmod':
+        return Gym.qmod(input_data, config_data, verbose)
 
     print("Agent id of {} not recognized.".format(agent_name))
     return None
