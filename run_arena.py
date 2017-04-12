@@ -4,6 +4,7 @@ import csv
 
 from mancala.agents.random import AgentRandom
 from mancala.agents.max import AgentMax
+from mancala.agents.exact import AgentExact
 from mancala.arena import Arena
 
 
@@ -23,7 +24,8 @@ ARENA = Arena([
     # second is a lambda that ONLY takes a random seed. This can be discarded
     # if the the Agent does not require a seed
     ("Random", lambda seed: AgentRandom(seed)),
-    ('Max', lambda seed: AgentMax(seed))
+    ('Max', lambda seed: AgentMax(seed)),
+    ('Exact', lmabda seed: AgentExact(seed))
 ], 1000000)
 
 print('Run the arena for: ', ARENA.csv_header())
