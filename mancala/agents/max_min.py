@@ -33,7 +33,11 @@ class AgentMinMax(Agent):
     def _min_max_move(depth, game, player, move):
         clone = game.clone()
         clone.move(move)
-        return AgentMinMax._min_max(depth, clone, player)
+        if game.turn_player() != clone.turn_player():
+            player_next = not player
+        else:
+            player_next = player
+        return AgentMinMax._min_max(depth, clone, player_next)
 
     def _move(self, game):
         """Return best value from Min_Max"""

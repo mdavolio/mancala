@@ -14,4 +14,4 @@ class TestAgentMinMax(unittest.TestCase):
     def test_basic_move(self):
         """Test move picks a random spot on the right side"""
         move = AgentMinMax(seed=123, depth=2).move(Game())
-        self.assertEqual(move, 2)
+        self.assertEqual(move, 1)
