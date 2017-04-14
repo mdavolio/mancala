@@ -36,9 +36,9 @@ class TestAgentMinMax(unittest.TestCase):
         game = Game([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0])
         move = AgentMinMax(seed=123, depth=3).move(game)
         self.assertEqual(move, 5)
-        
+
     def test_min_max_minimize_p2_score(self):
         '''Should avoid move which gives p2 more score next turn'''
-        game = Game([0, 0, 3, 0, 0, 3, 0, 0, 1, 0, 0, 0, 0, 0])
-        move = AgentMinMax(seed=123, depth = 2).move(game)
+        game = Game([0, 0, 3, 0, 0, 3, 0, 0, 1, 0, 0, 1, 0, 0])
+        move = AgentMinMax(seed=123, depth=1).move(game)
         self.assertEqual(move, 2)
