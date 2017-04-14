@@ -7,6 +7,7 @@ Max-Min Agent
 """
 
 import random
+import sys
 from mancala.game import Game
 from .agent import Agent
 
@@ -30,14 +31,14 @@ class AgentMinMax(Agent):
         return game.score()[game.turn_player() - 1]
 
     @staticmethod
-    def _min_max_move(depth, game, player, move):
+    def _min_max_move(depth, game, player, move, alpha, beta):
         clone = game.clone()
         clone.move(move)
         if game.turn_player() != clone.turn_player():
             player_next = not player
         else:
             player_next = player
-        return AgentMinMax._min_max(depth, clone, player_next)
+        return AgentMinMax._min_max(depth, clone, player_next, alpha, beta)
 
     def _move(self, game):
         """Return best value from Min_Max"""
@@ -53,7 +54,9 @@ class AgentMinMax(Agent):
                     self._depth,
                     game_clone,
                     True,
-                    move_slot
+                    move_slot,
+                    -sys.maxsize,
+                    sys.maxsize
                 ),
                 move_options))
 
@@ -66,24 +69,33 @@ class AgentMinMax(Agent):
         return final_move
 
     @staticmethod
-    def _min_max(depth, game, player):
+    def _min_max(depth, game, player, alpha, beta):
 
         if depth == 0:
             return -AgentMinMax._evaluate_board(game)
 
         move_options = Agent.valid_indices(game)
+        best_move = -sys.maxsize if player else sys.maxsize
 
-        available_scores = list(
-            map(lambda move_slot:
-                AgentMinMax._min_max_move(
+        for move_slot in move_options:
+            current_value = AgentMinMax._min_max_move(
                     depth - 1,
                     game,
                     not player,
-                    move_slot
-                ),
-                move_options))
+                    move_slot,
+                    alpha,
+                    beta
+                )
+        
+            if player:
+                best_move = max(current_value, best_move)
+                alpha = max(alpha, best_move)
+            else:
+                best_move = min(current_value, best_move)
+                beta = min(beta, best_move)
+            
+            if beta <= alpha:
+                return best_move
 
-        if player:
-            return max(available_scores)
-        else:
-            return min(available_scores)
+        
+        return best_move
