@@ -92,3 +92,13 @@ ENV/
 
 # Ignore generated CSV
 arena.results.csv
+
+# VS Code
+.vscode/
+cSpell.json
+
+# PyCharm
+.idea/
+
+# Training
+training/
