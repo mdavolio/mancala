@@ -1,10 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Abstract Agent for the a Mancala AI
-
-Exact score: If move allows for last stone to end in
-                score shell, make move
+Deep Q Learning Agent for the a Mancala AI
 """
 
 import random
@@ -51,6 +48,7 @@ class TrainerDQN():
     def __init__(self, seed=451):
         self._seed = seed
         self._run = 0
+        self._steps_done = 0
 
         self._BATCH_SIZE = 128
         self._GAMMA = 0.999
@@ -76,7 +74,8 @@ class TrainerDQN():
             while not game.over():
                 # Select and perform an action
                 action = self._select_action(state)
-                game.move(action)
+                move = TrainerDQN._action_tensor_to_int(action)
+                game.move(move)
 
                 player_two_acted = False
                 while game.turn_player() != 1 and not game.over():
@@ -119,16 +118,17 @@ class TrainerDQN():
         # We don't want to backprop through the expected action values and
         # volatile will save us on temporarily changing the model parameters'
         # requires_grad to False!
-        non_final_next_states = self.variable(torch.cat(
+        non_final_next_states = self.variable(torch.stack(
                 [s for s in batch.next_state if s is not None]
-            ))
-        state_batch = self.variable(torch.cat(batch.state))
-        action_batch = self.variable(torch.cat(batch.action))
-        reward_batch = self.variable(torch.cat(batch.reward))
+            ), True)
+        state_batch = self.variable(torch.stack(batch.state))
+        action_batch = self.variable(torch.stack(batch.action))
+        reward_batch = self.variable(torch.stack(batch.reward))
 
         # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
         # columns of actions taken
-        state_action_values = self._model(state_batch).gather(1, action_batch)
+        state_action_values = self._model(state_batch)
+        state_action_values = state_action_values.gather(1, action_batch)
 
         # Compute V(s_{t+1}) for all next states.
         next_state_values = self.variable(torch.zeros(self._BATCH_SIZE))
@@ -139,8 +139,8 @@ class TrainerDQN():
         # requires_grad=False
         next_state_values.volatile = False
         # Compute the expected Q values
-        expected_state_action_values = (
-            next_state_values * self._GAMMA) + reward_batch
+        expected_state_action_values = (next_state_values * self._GAMMA) + \
+            reward_batch
 
         # Compute Huber loss
         loss = F.smooth_l1_loss(state_action_values,
@@ -156,48 +156,60 @@ class TrainerDQN():
     @staticmethod
     def game_to_state(game):
         """Resolve a game's current state to a model input state"""
-        return torch.FloatTensor(game._board[0:6] + game._board[7:13])
+        return torch.FloatTensor(game._board[0:6] + game._board[7:13]).div(48)
 
     @staticmethod
     def game_to_reward(score_previous, game, player_two_acted):
         """Reward based on the past score. Always player 1 POV"""
         score = game.score()
         if game.over():
-            return 100 if score[0] > score[1] else -100
-        # penalize waiting
-        # penalize less if keeping turn
-        # earning score is worth something
-        # letting score is penalized
-        reward = -3 + \
-            (-6 if player_two_acted else 0) + \
-            0.5 * (score[0] - score_previous[0]) - \
-            0.25 * (score[1] - score_previous[1])
+            reward = 100 if score[0] > score[1] else -100
+        else:
+            # penalize waiting
+            # penalize less if keeping turn
+            # earning score is worth something
+            # letting score is penalized
+            reward = 0 + \
+                (-1 if player_two_acted else 0) + \
+                0.5 * (score[0] - score_previous[0]) - \
+                0.25 * (score[1] - score_previous[1])
 
         return torch.Tensor([reward])
+
+    @staticmethod
+    def _action_tensor_to_int(action):
+        return action[0]
 
     def _select_action(self, state):
         """
         Based on the current model and a game state, pick a new action (move)
         """
         sample = random.random()
+        self._steps_done += 1
         eps_threshold = self._EPS_END + (self._EPS_START - self._EPS_END) * \
             math.exp(-1. * self._steps_done / self._EPS_DECAY)
         if sample > eps_threshold:
-            return model(self.variable(state)).data.max(1)[1].cpu()
+            return self._model(
+                    self.variable(state.unsqueeze(0))
+                ).data.max(1)[1][0].cpu()
         else:
-            return torch.LongTensor([[random.randrange(6)]])
+            return torch.LongTensor([random.randrange(6)])
+            # pick = random.randrange(6)
+            # return torch.LongTensor([[
+            #     0 if pick != i else 1 for i in range(6)
+            # ]])
 
-    def variable(self, tensor):
+    def variable(self, tensor, volatile=False):
         if self._USE_CUDA:
             tensor = tensor.cuda()
-        return Variable(tensor)
+        return Variable(tensor, volatile=volatile)
 
 
 class ModelDQN(nn.Module):
     """The DQN Model. From the 12 slots, pick of the six choices"""
 
     def __init__(self):
-        super(DQN, self).__init__()
+        super(ModelDQN, self).__init__()
         self.layer1 = nn.Linear(12, 32)
         self.layer2 = nn.Linear(32, 64)
         self.layer3 = nn.Linear(64, 32)
@@ -207,7 +219,7 @@ class ModelDQN(nn.Module):
         x = F.sigmoid(self.layer1(x))
         x = F.sigmoid(self.layer2(x))
         x = F.sigmoid(self.layer3(x))
-        x = F.sigmoid(self.layer4(x))
+        x = F.softmax(self.layer4(x))
         return x
 
 
