@@ -46,11 +46,15 @@ class AgentDQN(Agent):
         ModelDQN.Seed(self._seed + self._idx)
         game_clone, rot_flag = game.clone_turn()
 
-        game_state = TrainerDQN.game_to_state(game_clone)
+        state = TrainerDQN.game_to_state(game_clone)
         action = self._model(
             ModelDQN.Variable(state.unsqueeze(0))
-        ).data.max(1)[1][0].cpu()
-        move = TrainerDQN.action_tensor_to_int(action)
+        ).data.cpu()
+        move_options = Agent.valid_indices(game_clone)
+        move_values = action[0][torch.LongTensor(move_options)].tolist()
+        move_idx = action[0][torch.LongTensor(move_options)].max(0)[
+            1].tolist()[0]
+        move = move_options[move_idx]
 
         return Game.rotate_board(rot_flag, move)
 
@@ -95,6 +99,7 @@ class TrainerDQN():
 
         for idx in range(num_episodes):
             # Initialize the environment and state
+            print("Starting episode ", idx)
             game = Game()
             state = TrainerDQN.game_to_state(game)
             score_previous = game.score()
@@ -140,7 +145,7 @@ class TrainerDQN():
         # Compute a mask of non-final states and concatenate the batch elements
         non_final_mask = torch.ByteTensor(
             tuple(map(lambda s: s is not None, batch.next_state)))
-        if self._USE_CUDA:
+        if ModelDQN.USE_CUDA:
             non_final_mask = non_final_mask.cuda()
 
         # We don't want to backprop through the expected action values and
@@ -243,13 +248,13 @@ class ModelDQN(nn.Module):
         return x
 
     @staticmethod
-    def Variable(self, tensor, volatile=False):
+    def Variable(tensor, volatile=False):
         if ModelDQN.USE_CUDA:
             tensor = tensor.cuda()
         return Variable(tensor, volatile=volatile)
 
     @staticmethod
-    def Seed(self, seed):
+    def Seed(seed):
         torch.manual_seed(seed)
         if ModelDQN.USE_CUDA:
             torch.cuda.manual_seed_all(seed)
