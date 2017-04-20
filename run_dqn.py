@@ -21,12 +21,12 @@ PARSER.add_argument('--input', type=str,
 PARSER.add_argument('--output', type=str, required=True,
                     help='Path to write trained results')
 
-# ARGS = PARSER.parse_args()
-ARGS = PARSER.parse_args(([
-    '--output',
-    'training/dqn.pth',
-    '--verbose'
-]))
+ARGS = PARSER.parse_args()
+# ARGS = PARSER.parse_args(([
+#     '--output',
+#     'training/dqn.pth',
+#     '--verbose'
+# ]))
 
 
 print('Starting Training')
