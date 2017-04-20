@@ -25,7 +25,7 @@ ARENA = Arena([
     # if the the Agent does not require a seed
     ("Random", lambda seed: AgentRandom(seed)),
     ('Max', lambda seed: AgentMax(seed)),
-    ('Exact', lmabda seed: AgentExact(seed))
+    ('Exact', lambda seed: AgentExact(seed))
 ], 1000000)
 
 print('Run the arena for: ', ARENA.csv_header())
