@@ -111,7 +111,8 @@ class TrainerDQN():
         for idx in range(num_episodes):
             # Initialize the environment and state
             if idx % print_mod == 0 or time.time() - time_last > 30:
-                sys.stdout.write("({:0>5})".format(idx))
+                sys.stdout.write("{:0>5}:".format(idx))
+                sys.stdout.flush()
                 time_last = time.time()
             game = Game()
             state = TrainerDQN.game_to_state(game)
