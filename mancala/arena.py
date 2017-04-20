@@ -31,15 +31,25 @@ class Arena():
             list(zip(agents, agents))
         self._combos = sorted(combos, key=lambda t: t[0][0] + '_' + t[1][0])
         self._results = list(map(lambda t: Arena._handle_combo(
-            t[1], t[0], games_to_play), enumerate(self._combos)))
+            t[1], games_to_play, t[0]), enumerate(self._combos)))
 
     @staticmethod
-    def _handle_combo(combo, seed, games_to_play):
+    def _handle_combo(combo, games_to_play, seed):
+        wins = Arena.compare_agents(
+            combo[0][1], combo[1][1], games_to_play, seed)
+        return (combo[0][0], combo[1][0], wins)
+
+    @staticmethod
+    def compare_agents(lambda_01, lambda_02, games_to_play=51, seed=451):
+        """
+        Returns number of times agent created from lambda_01
+        wins over agent created from lambda_02
+        """
         wins = 0
-        for idx in range(0, games_to_play):
+        for idx in range(games_to_play):
             game = Game()
-            agent_one = (combo[0][1])(seed + idx)
-            agent_two = (combo[1][1])(seed + idx)
+            agent_one = (lambda_01)(seed + idx)
+            agent_two = (lambda_02)(seed + idx)
             while not game.over():
                 if game.turn_player() == 1:
                     game.move(agent_one.move(game))
@@ -47,7 +57,16 @@ class Arena():
                     game.move(agent_two.move(game))
             if game.score()[0] > game.score()[1]:
                 wins = wins + 1
-        return (combo[0][0], combo[1][0], wins)
+        return wins
+
+    @staticmethod
+    def compare_agents_float(lambda_01, lambda_02, games_to_play=51, seed=451):
+        """
+        Returns fraction of times agent created from lambda_01
+        wins over agent created from lambda_02
+        """
+        wins = Arena.compare_agents(lambda_01, lambda_02, games_to_play, seed)
+        return wins / games_to_play
 
     def names(self):
         """Sorted names of agents"""
