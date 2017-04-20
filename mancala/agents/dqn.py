@@ -24,28 +24,48 @@ from .exact import AgentExact
 class AgentDQN(Agent):
     '''
     Agent which leverages Deep Q Learning
-
-    Based on
-    http://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
     '''
 
-    def __init__(self, seed=451):
+    def __init__(self,
+                 model_path=None,
+                 seed=451):
         self._seed = seed
         self._idx = 0
+        self._model = ModelDQN()
+        ModelDQN.Seed(seed)
+
+        if ModelDQN.USE_CUDA:
+            self._model.cuda()
+
+        if model_path is not None:
+            self._model.load_state_dict(torch.load(model_path))
 
     def _move(self, game):
         '''Return move which ends in score hole'''
         self._idx = self._idx + 1
-        random.seed(self._seed + self._idx)
+        ModelDQN.Seed(self._seed + self._idx)
         game_clone, rot_flag = game.clone_turn()
 
-        return 0
+        game_state = TrainerDQN.game_to_state(game_clone)
+        action = self._model(
+            ModelDQN.Variable(state.unsqueeze(0))
+        ).data.max(1)[1][0].cpu()
+        move = TrainerDQN.action_tensor_to_int(action)
+
+        return Game.rotate_board(rot_flag, move)
 
 
 class TrainerDQN():
-    """Training class for simple Deep Q Learning"""
+    """
+    Training class for simple Deep Q Learning
 
-    def __init__(self, seed=451):
+    Based on
+    http://pytorch.org/tutorials/intermediate/reinforcement_q_learning.html
+    """
+
+    def __init__(self,
+                 model_path=None,
+                 seed=451):
         self._seed = seed
         self._run = 0
         self._steps_done = 0
@@ -55,11 +75,19 @@ class TrainerDQN():
         self._EPS_START = 0.9
         self._EPS_END = 0.05
         self._EPS_DECAY = 200
-        self._USE_CUDA = torch.cuda.is_available()
+        ModelDQN.Seed(seed)
 
         self._model = ModelDQN()
         self._memory = ReplayMemory(10000)
         self._optimizer = optim.RMSprop(self._model.parameters(), lr=0.01)
+
+        if ModelDQN.USE_CUDA:
+            self._model.cuda()
+        if model_path is not None:
+            self._model.load_state_dict(torch.load(model_path))
+
+    def write_state_to_path(self, path):
+        torch.save(self._model.state_dict(), path)
 
     def train(self, num_episodes=10, agent=None):
         self._run += 1
@@ -74,7 +102,7 @@ class TrainerDQN():
             while not game.over():
                 # Select and perform an action
                 action = self._select_action(state)
-                move = TrainerDQN._action_tensor_to_int(action)
+                move = TrainerDQN.action_tensor_to_int(action)
                 game.move(move)
 
                 player_two_acted = False
@@ -118,12 +146,12 @@ class TrainerDQN():
         # We don't want to backprop through the expected action values and
         # volatile will save us on temporarily changing the model parameters'
         # requires_grad to False!
-        non_final_next_states = self.variable(torch.stack(
-                [s for s in batch.next_state if s is not None]
-            ), True)
-        state_batch = self.variable(torch.stack(batch.state))
-        action_batch = self.variable(torch.stack(batch.action))
-        reward_batch = self.variable(torch.stack(batch.reward))
+        non_final_next_states = ModelDQN.Variable(torch.stack(
+            [s for s in batch.next_state if s is not None]
+        ), True)
+        state_batch = ModelDQN.Variable(torch.stack(batch.state))
+        action_batch = ModelDQN.Variable(torch.stack(batch.action))
+        reward_batch = ModelDQN.Variable(torch.stack(batch.reward))
 
         # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
         # columns of actions taken
@@ -131,7 +159,7 @@ class TrainerDQN():
         state_action_values = state_action_values.gather(1, action_batch)
 
         # Compute V(s_{t+1}) for all next states.
-        next_state_values = self.variable(torch.zeros(self._BATCH_SIZE))
+        next_state_values = ModelDQN.Variable(torch.zeros(self._BATCH_SIZE))
         next_state_values[non_final_mask] = self._model(
             non_final_next_states).max(1)[0]
         # Now, we don't want to mess up the loss with a volatile flag, so let's
@@ -177,7 +205,7 @@ class TrainerDQN():
         return torch.Tensor([reward])
 
     @staticmethod
-    def _action_tensor_to_int(action):
+    def action_tensor_to_int(action):
         return action[0]
 
     def _select_action(self, state):
@@ -190,23 +218,15 @@ class TrainerDQN():
             math.exp(-1. * self._steps_done / self._EPS_DECAY)
         if sample > eps_threshold:
             return self._model(
-                    self.variable(state.unsqueeze(0))
-                ).data.max(1)[1][0].cpu()
+                ModelDQN.Variable(state.unsqueeze(0))
+            ).data.max(1)[1][0].cpu()
         else:
             return torch.LongTensor([random.randrange(6)])
-            # pick = random.randrange(6)
-            # return torch.LongTensor([[
-            #     0 if pick != i else 1 for i in range(6)
-            # ]])
-
-    def variable(self, tensor, volatile=False):
-        if self._USE_CUDA:
-            tensor = tensor.cuda()
-        return Variable(tensor, volatile=volatile)
 
 
 class ModelDQN(nn.Module):
     """The DQN Model. From the 12 slots, pick of the six choices"""
+    USE_CUDA = torch.cuda.is_available()
 
     def __init__(self):
         super(ModelDQN, self).__init__()
@@ -221,6 +241,18 @@ class ModelDQN(nn.Module):
         x = F.sigmoid(self.layer3(x))
         x = F.softmax(self.layer4(x))
         return x
+
+    @staticmethod
+    def Variable(self, tensor, volatile=False):
+        if ModelDQN.USE_CUDA:
+            tensor = tensor.cuda()
+        return Variable(tensor, volatile=volatile)
+
+    @staticmethod
+    def Seed(self, seed):
+        torch.manual_seed(seed)
+        if ModelDQN.USE_CUDA:
+            torch.cuda.manual_seed_all(seed)
 
 
 Transition = namedtuple('Transition',
