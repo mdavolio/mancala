@@ -102,13 +102,14 @@ class TrainerDQN():
     def write_state_to_path(self, path):
         torch.save(self._model.state_dict(), path)
 
-    def train(self, num_episodes=10, agent=None):
+    def train(self, num_episodes=10, agent=None, print_mod=1):
         self._run += 1
         agent = AgentExact(self._seed + self._run) if agent is None else agent
 
         for idx in range(num_episodes):
             # Initialize the environment and state
-            print("Starting episode ", idx)
+            if idx % print_mod == 0:
+                print("Running episode ", idx)
             game = Game()
             state = TrainerDQN.game_to_state(game)
             score_previous = game.score()

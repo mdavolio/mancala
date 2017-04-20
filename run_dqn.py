@@ -33,10 +33,18 @@ print('Starting Training')
 
 
 def train(path_output, path_input=None, verbose=True):
-    trainer = TrainerDQN(path_input, 451)
+    trainer = TrainerDQN(path_input,
+                         seed=451,
+                         batch_size=128,
+                         gamma=0.9,
+                         eps_start=0.9,
+                         eps_end=0.05,
+                         eps_decay=500,
+                         replay_size=10000,
+                         learning_rate=0.02)
 
     for epoch in range(10):
-        trainer.train(10)
+        trainer.train(10, print_mod=2)
         trainer.write_state_to_path(path_output)
 
         win_rate_v_random = Arena.compare_agents_float(
