@@ -6,6 +6,8 @@ Deep Q Learning Agent for the a Mancala AI
 
 import random
 import math
+import time
+import sys
 from collections import namedtuple
 
 import torch
@@ -104,11 +106,13 @@ class TrainerDQN():
     def train(self, num_episodes=10, agent=None, print_mod=1):
         self._run += 1
         agent = AgentExact(self._seed + self._run) if agent is None else agent
+        time_last = time.time()
 
         for idx in range(num_episodes):
             # Initialize the environment and state
-            if idx % print_mod == 0:
-                print("Running episode ", idx)
+            if idx % print_mod == 0 or time.time() - time_last > 30:
+                sys.stdout.write("({:0>5})".format(idx))
+                time_last = time.time()
             game = Game()
             state = TrainerDQN.game_to_state(game)
             score_previous = game.score()
@@ -139,6 +143,8 @@ class TrainerDQN():
 
                 # Perform one step of the optimization (on the target network)
                 self._optimize_model()
+
+        print(' :EOF')
 
     def _optimize_model(self):
 
