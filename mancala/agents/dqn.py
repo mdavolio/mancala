@@ -69,21 +69,30 @@ class TrainerDQN():
 
     def __init__(self,
                  model_path=None,
-                 seed=451):
-        self._seed = seed
+                 seed=451,
+                 batch_size=128,
+                 gamma=0.999,
+                 eps_start=0.9,
+                 eps_end=0.05,
+                 eps_decay=200,
+                 replay_size=10000,
+                 learning_rate=0.02
+                 ):
         self._run = 0
         self._steps_done = 0
+        self._seed = seed
 
-        self._BATCH_SIZE = 128
-        self._GAMMA = 0.999
-        self._EPS_START = 0.9
-        self._EPS_END = 0.05
-        self._EPS_DECAY = 200
+        self._BATCH_SIZE = batch_size
+        self._GAMMA = gamma
+        self._EPS_START = eps_start
+        self._EPS_END = eps_end
+        self._EPS_DECAY = eps_decay
         ModelDQN.Seed(seed)
 
         self._model = ModelDQN()
-        self._memory = ReplayMemory(10000)
-        self._optimizer = optim.RMSprop(self._model.parameters(), lr=0.01)
+        self._memory = ReplayMemory(replay_size)
+        self._optimizer = optim.RMSprop(
+            self._model.parameters(), lr=learning_rate)
 
         if ModelDQN.USE_CUDA:
             self._model.cuda()
