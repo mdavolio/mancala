@@ -132,7 +132,7 @@ class TrainerDQN():
                 # Observe new state
                 reward = TrainerDQN.game_to_reward(
                     score_previous, game, player_two_acted)
-                next_state = None if game.over() else \
+                next_state = torch.FloatTensor([-1] + [0] * 11) if game.over() else \
                     TrainerDQN.game_to_state(game)
 
                 # Store the transition in memory
@@ -151,28 +151,25 @@ class TrainerDQN():
 
         if len(self._memory) < self._BATCH_SIZE:
             return
-        transitions = self._memory.sample(self._BATCH_SIZE)
-        # Transpose the batch (see http://stackoverflow.com/a/19343/3343043 for
-        # detailed explanation).
-        # this makes batch a tuple where the keys are iterable for the entire
-        # batch
-        batch = Transition(*zip(*transitions))
+        (state_batch, action_batch, state_next_batch, reward_batch) = \
+            self._memory.sample(self._BATCH_SIZE)
+
+        garbage = torch.ones(self._BATCH_SIZE, 12) * -1
+        non_final_mask = torch.ne(garbage, state_next_batch).t()[0]
 
         # Compute a mask of non-final states and concatenate the batch elements
-        non_final_mask = torch.ByteTensor(
-            tuple(map(lambda s: s is not None, batch.next_state)))
+        #non_final_mask = torch.ByteTensor(
+        #    tuple(map(lambda s: s is not None, batch.next_state)))
         if ModelDQN.USE_CUDA:
             non_final_mask = non_final_mask.cuda()
 
         # We don't want to backprop through the expected action values and
         # volatile will save us on temporarily changing the model parameters'
         # requires_grad to False!
-        non_final_next_states = ModelDQN.Variable(torch.stack(
-            [s for s in batch.next_state if s is not None]
-        ), True)
-        state_batch = ModelDQN.Variable(torch.stack(batch.state))
-        action_batch = ModelDQN.Variable(torch.stack(batch.action))
-        reward_batch = ModelDQN.Variable(torch.stack(batch.reward))
+        non_final_next_states = ModelDQN.Variable(states_next_batch[non_final_mask], True)
+        state_batch = ModelDQN.Variable(state_batch)
+        action_batch = ModelDQN.Variable(action_batch)
+        reward_batch = ModelDQN.Variable(reward_batch)
 
         # Compute Q(s_t, a) - the model computes Q(s_t), then we select the
         # columns of actions taken
@@ -220,8 +217,7 @@ class TrainerDQN():
             # letting score is penalized
             reward = 0 + \
                 (-1 if player_two_acted else 0) + \
-                0.5 * (score[0] - score_previous[0]) - \
-                0.25 * (score[1] - score_previous[1])
+                0.5 * (score[0] - score_previous[0])
 
         return torch.Tensor([reward])
 
@@ -292,19 +288,34 @@ class ReplayMemory(object):
 
     def __init__(self, capacity):
         self.capacity = capacity
-        self.memory = []
         self.position = 0
+        self.states = torch.zeros(capacity, 12)
+        self.actions = torch.zeros(capacity, 6).type(torch.LongTensor)
+        self.states_next = torch.zeros(capacity, 12)
+        self.rewards = torch.zeros(capacity, 1)
+        self.full = False
 
-    def push(self, *args):
+
+    def push(self, state, action, state_next, reward):
         """Saves a transition."""
-        if len(self.memory) < self.capacity:
-            self.memory.append(None)
-        self.memory[self.position] = Transition(*args)
+        self.states[self.position] = state
+        print(action)
+        print(self.actions.size())
+        self.actions[self.position] = action
+        self.states_next[self.position] = state_next
+        self.rewards[self.position] = reward
         self.position = (self.position + 1) % self.capacity
+        self.full = self.full or self.position == 0
 
     def sample(self, batch_size):
         """Sample from the memories"""
-        return random.sample(self.memory, batch_size)
+        rand_batch = torch.randperm(capacity)
+        index = torch.split(rand_batch, batch_size)[0]
+        states_batch = self.states[index]
+        action_batch = self.action[index]
+        states_new_batch = self.states_new[index]
+        rewards_batch = self.rewards[index]
+        return (states_batch, action_batch, states_new_batch, rewards_batch)
 
     def __len__(self):
-        return len(self.memory)
+        return self.capacity if self.full else self.position

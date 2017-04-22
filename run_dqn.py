@@ -44,8 +44,8 @@ def train(path_output, path_input=None, verbose=True):
                          replay_size=10000,
                          learning_rate=0.02)
 
-    for epoch in range(10):
-        trainer.train(100, print_mod=500)
+    for epoch in range(10000):
+        trainer.train(5000, print_mod=500)
         trainer.write_state_to_path("{}.epoch.{:0>8}".format(path_output, epoch))
         trainer.write_state_to_path(path_output)
 
