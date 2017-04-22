@@ -5,7 +5,7 @@ const reset_state = () => {
   player_turn = 1;
 }
 
-const player_types = { 'human': { url: '' }, 'random': { url: '' }, 'max': { url: '' }, 'exact': { url: '' }};
+const player_types = { 'human': { url: '' }, 'random': { url: '' }, 'max': { url: '' },'exact': { url: '' }, 'min_max':{ url: '' } };
 const players = ['one', 'two'];
 var player_states = ['human', 'human'];
 
