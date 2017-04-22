@@ -20,7 +20,7 @@ FLASKAPP.config.from_object(__name__)
 # Define agents
 AGENT_RANDOM = AgentRandom(454)
 AGENT_MAX = AgentMax(454)
-AGENT_MINNY = AgentMinMax(454, 8)
+AGENT_MINNY = AgentMinMax(454, 3)
 
 
 def board_str_to_game(board, player_turn):

@@ -28,17 +28,7 @@ class AgentMinMax(Agent):
 
     @staticmethod
     def _evaluate_board(game):
-        return game.score()[game.turn_player() - 1]
-
-    @staticmethod
-    def _min_max_move(depth, game, player, move, alpha, beta):
-        clone = game.clone()
-        clone.move(move)
-        if game.turn_player() != clone.turn_player():
-            player_next = not player
-        else:
-            player_next = player
-        return AgentMinMax._min_max(depth, clone, player_next, alpha, beta)
+        return game.score()[0]
 
     def _move(self, game):
         """Return best value from Min_Max"""
@@ -50,10 +40,9 @@ class AgentMinMax(Agent):
 
         available_scores = list(
             map(lambda move_slot:
-                AgentMinMax._min_max_move(
+                AgentMinMax._min_max(
                     self._depth,
                     game_clone,
-                    True,
                     move_slot,
                     -sys.maxsize,
                     sys.maxsize
@@ -69,33 +58,36 @@ class AgentMinMax(Agent):
         return final_move
 
     @staticmethod
-    def _min_max(depth, game, player, alpha, beta):
+    def _min_max(depth, game, move, alpha, beta):
+
+        clone = game.clone()
+        clone.move(move)
+
+        maximizer = clone.turn_player() == 1
 
         if depth == 0:
-            return -AgentMinMax._evaluate_board(game)
+            return AgentMinMax._evaluate_board(clone)
 
-        move_options = Agent.valid_indices(game)
-        best_move = -sys.maxsize if player else sys.maxsize
+        move_options = Agent.valid_indices(clone)
+        best_move = -sys.maxsize if maximizer else sys.maxsize
 
         for move_slot in move_options:
-            current_value = AgentMinMax._min_max_move(
-                    depth - 1,
-                    game,
-                    not player,
-                    move_slot,
-                    alpha,
-                    beta
-                )
-        
-            if player:
+            current_value = AgentMinMax._min_max(
+                depth - 1,
+                clone,
+                move_slot,
+                alpha,
+                beta
+            )
+
+            if maximizer:
                 best_move = max(current_value, best_move)
                 alpha = max(alpha, best_move)
             else:
                 best_move = min(current_value, best_move)
                 beta = min(beta, best_move)
-            
+
             if beta <= alpha:
                 return best_move
 
-        
         return best_move
