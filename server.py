@@ -12,7 +12,7 @@ from mancala.game import Game
 from mancala.agents.random import AgentRandom
 from mancala.agents.max import AgentMax
 from mancala.agents.max_min import AgentMinMax
-
+from mancala.agents.exact import AgentExact
 
 FLASKAPP = Flask(__name__)
 FLASKAPP.config.from_object(__name__)
@@ -21,7 +21,7 @@ FLASKAPP.config.from_object(__name__)
 AGENT_RANDOM = AgentRandom(454)
 AGENT_MAX = AgentMax(454)
 AGENT_MINNY = AgentMinMax(454, 3)
-
+AGENT_EXACT = AgentExact(454)
 
 def board_str_to_game(board, player_turn):
     """Turns parameters into game or error tuple"""
@@ -45,6 +45,8 @@ def agent_play(game, agent_str):
         game.move(AGENT_MAX.move(game))
     elif agent_str == 'min_max':
         game.move(AGENT_MINNY.move(game))
+    elif agent_str == 'exact':
+        game.move(AGENT_EXACT.move(game))
     return game
 
 

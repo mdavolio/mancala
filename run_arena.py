@@ -4,6 +4,8 @@ import csv
 
 from mancala.agents.random import AgentRandom
 from mancala.agents.max_min import AgentMinMax
+from mancala.agents.max import AgentMax
+from mancala.agents.exact import AgentExact
 from mancala.arena import Arena
 
 
@@ -24,8 +26,10 @@ ARENA = Arena([
     # if the the Agent does not require a seed
     ("Random", lambda seed: AgentRandom(seed)),
     ('Minny', lambda seed: AgentMinMax(seed, depth = 3))
-
+    ('Max', lambda seed: AgentMax(seed)),
+    ('Exact', lmabda seed: AgentExact(seed))
 ], 500)
+
 
 print('Run the arena for: ', ARENA.csv_header())
 
