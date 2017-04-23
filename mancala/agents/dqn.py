@@ -132,8 +132,8 @@ class TrainerDQN():
                 # Observe new state
                 reward = TrainerDQN.game_to_reward(
                     score_previous, game, player_two_acted)
-                next_state = torch.FloatTensor([-1] + [0] * 11) if game.over() else \
-                    TrainerDQN.game_to_state(game)
+                next_state = torch.FloatTensor([-1] + [0] * 11) if \
+                    game.over() else TrainerDQN.game_to_state(game)
 
                 # Store the transition in memory
                 self._memory.push(state, action, next_state, reward)
@@ -158,7 +158,7 @@ class TrainerDQN():
         non_final_mask = torch.ne(garbage, state_next_batch).t()[0]
 
         # Compute a mask of non-final states and concatenate the batch elements
-        #non_final_mask = torch.ByteTensor(
+        # non_final_mask = torch.ByteTensor(
         #    tuple(map(lambda s: s is not None, batch.next_state)))
         if ModelDQN.USE_CUDA:
             non_final_mask = non_final_mask.cuda()
@@ -166,7 +166,8 @@ class TrainerDQN():
         # We don't want to backprop through the expected action values and
         # volatile will save us on temporarily changing the model parameters'
         # requires_grad to False!
-        non_final_next_states = ModelDQN.Variable(states_next_batch[non_final_mask], True)
+        non_final_next_states = ModelDQN.Variable(
+            states_next_batch[non_final_mask], True)
         state_batch = ModelDQN.Variable(state_batch)
         action_batch = ModelDQN.Variable(action_batch)
         reward_batch = ModelDQN.Variable(reward_batch)
@@ -290,11 +291,10 @@ class ReplayMemory(object):
         self.capacity = capacity
         self.position = 0
         self.states = torch.zeros(capacity, 12)
-        self.actions = torch.zeros(capacity, 6).type(torch.LongTensor)
+        self.actions = torch.zeros(capacity, 1).type(torch.LongTensor)
         self.states_next = torch.zeros(capacity, 12)
         self.rewards = torch.zeros(capacity, 1)
         self.full = False
-
 
     def push(self, state, action, state_next, reward):
         """Saves a transition."""
