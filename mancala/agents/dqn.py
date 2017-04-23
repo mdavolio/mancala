@@ -165,7 +165,8 @@ class TrainerDQN():
         mask_normal = torch.LongTensor(indices_normal)
         mask_bit_normal = state_next_batch[:, 0] != -1
         if ModelDQN.USE_CUDA:
-            mask_normal = mask_normal.cuda()
+            mask_bit_normal = mask_bit_normal.cuda()
+            # mask_normal = mask_normal.cuda()
 
         # We don't want to backprop through the expected action values and
         # volatile will save us on temporarily changing the model parameters'
