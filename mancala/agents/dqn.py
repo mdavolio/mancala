@@ -105,8 +105,9 @@ class TrainerDQN():
 
     def train(self, num_episodes=10, agent=None, print_mod=1):
         self._run += 1
+        actions = 0
+        time_start = time.time()
         agent = AgentExact(self._seed + self._run) if agent is None else agent
-        time_last = time.time()
 
         for idx in range(num_episodes):
             # Initialize the environment and state
@@ -121,6 +122,7 @@ class TrainerDQN():
             done = False
             while not game.over():
                 # Select and perform an action
+                actions += 1
                 action = self._select_action(state)
                 move = TrainerDQN.action_tensor_to_int(action)
                 game.move(move)
@@ -146,7 +148,8 @@ class TrainerDQN():
                 # Perform one step of the optimization (on the target network)
                 self._optimize_model()
 
-        print(' :EOF')
+        aps = actions / (time.time() - time_start)
+        print(' :EOF {:.2f} action/second'.format(aps))
 
     def _optimize_model(self):
 
