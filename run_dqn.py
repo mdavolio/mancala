@@ -36,16 +36,16 @@ print('Starting Training')
 def train(path_output, path_input=None, verbose=True):
     trainer = TrainerDQN(path_input,
                          seed=451,
-                         batch_size=1024,
+                         batch_size=2048,
                          gamma=0.9,
                          eps_start=0.9,
                          eps_end=0.05,
-                         eps_decay=600,
+                         eps_decay=40000,
                          replay_size=25000,
                          learning_rate=0.02)
 
-    for epoch in range(100):
-        trainer.train(2500, print_mod=500)
+    for epoch in range(10000):
+        trainer.train(4500, print_mod=500)
         trainer.write_state_to_path("{}.epoch.{:0>8}".format(path_output, epoch))
         trainer.write_state_to_path(path_output)
 

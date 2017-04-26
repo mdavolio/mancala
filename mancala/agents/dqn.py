@@ -106,6 +106,7 @@ class TrainerDQN():
     def train(self, num_episodes=10, agent=None, print_mod=1):
         self._run += 1
         actions = 0
+        self._steps_done = 0
         time_start = time.time()
         agent = AgentExact(self._seed + self._run) if agent is None else agent
 
@@ -113,7 +114,7 @@ class TrainerDQN():
             # Initialize the environment and state
             if idx % print_mod == 0 or time.time() - time_last > 30:
                 sys.stdout.write(
-                    " {:0>5}/{:0>5}:".format(idx, len(self._memory)))
+                    " {:0>5}/{:0>5}/{:0>5}:".format(self._steps_done, idx, len(self._memory)))
                 sys.stdout.flush()
                 time_last = time.time()
             game = Game()
@@ -209,6 +210,8 @@ class TrainerDQN():
         # Optimize the model
         self._optimizer.zero_grad()
         loss.backward()
+        for param in self._model.parameters():
+            param.grad.data.clamp_(-1, 1)
         self._optimizer.step()
 
     @staticmethod
@@ -230,6 +233,7 @@ class TrainerDQN():
             reward = 0 + \
                 (-1 if player_two_acted else 0) + \
                 0.5 * (score[0] - score_previous[0])
+            # reward = 0
 
         return torch.Tensor([reward])
 
@@ -265,10 +269,10 @@ class ModelDQN(nn.Module):
         self.layer4 = nn.Linear(32, 6)
 
     def forward(self, x):
-        x = F.sigmoid(self.layer1(x))
-        x = F.sigmoid(self.layer2(x))
-        x = F.sigmoid(self.layer3(x))
-        x = F.softmax(self.layer4(x))
+        x = F.relu(self.layer1(x))
+        x = F.relu(self.layer2(x))
+        x = F.relu(self.layer3(x))
+        x = self.layer4(x)
         return x
 
     @staticmethod
