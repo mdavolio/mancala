@@ -114,7 +114,9 @@ class TrainerDQN():
             # Initialize the environment and state
             if idx % print_mod == 0 or time.time() - time_last > 30:
                 sys.stdout.write(
-                    " {:0>5}/{:0>5}/{:0>5}:".format(self._steps_done, idx, len(self._memory)))
+                    " {:0>5}/{:0>5}/{:0>5}:".format(self._steps_done,
+                                                    idx,
+                                                    len(self._memory)))
                 sys.stdout.flush()
                 time_last = time.time()
             game = Game()
@@ -284,19 +286,17 @@ class ModelDQN(nn.Module):
         x1 = F.relu(self.layer1(input_vector))
         x2 = F.relu(self.layer2(x1))  # linear result
 
-        i = ModelDQN.linear_batch_to_img(input_vector)
-        i2 = F.relu(self.bn1(self.conv1(i)))
-        # i3 = F.relu(self.bn2(self.conv2(i2)))
-        # i4 = F.relu(self.bn3(self.conv3(i3)))
+        i1 = ModelDQN.linear_batch_to_img(input_vector)
+        i2 = F.relu(self.bn1(self.conv1(i1)))
         i3 = i2.view(i2.size(0), -1)  # cnn result
 
         joined = torch.cat([x2, i3], 1)
 
-        j = F.relu(self.layer3(joined))
-        j3 = F.relu(self.layer4(j))
-        j4 = self.layer5(j3)
+        j1 = F.relu(self.layer3(joined))
+        j2 = F.relu(self.layer4(j1))
+        j3 = self.layer5(j2)
 
-        return j4
+        return j3
 
     @staticmethod
     def linear_batch_to_img(linear_batch):
