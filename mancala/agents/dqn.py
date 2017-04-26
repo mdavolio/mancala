@@ -266,15 +266,44 @@ class ModelDQN(nn.Module):
         super(ModelDQN, self).__init__()
         self.layer1 = nn.Linear(12, 32)
         self.layer2 = nn.Linear(32, 64)
-        self.layer3 = nn.Linear(64, 32)
-        self.layer4 = nn.Linear(32, 6)
 
-    def forward(self, x):
-        x = F.relu(self.layer1(x))
-        x = F.relu(self.layer2(x))
-        x = F.relu(self.layer3(x))
-        x = self.layer4(x)
-        return x
+        self.conv1 = nn.Conv2d(1, 32, kernel_size=2, stride=1)
+        # aside from batch - this flattens to size 160
+        # torch.Size([batch, 32, 1, 5])
+        self.bn1 = nn.BatchNorm2d(32)
+
+        self.layer3 = nn.Linear(64 + 160, 128)
+        self.layer4 = nn.Linear(128, 64)
+        self.layer5 = nn.Linear(64, 6)
+
+    def forward(self, input_vector):
+        # x is batch*state
+        # x is batch*12
+        # i should be batch*1*2*6
+
+        x1 = F.relu(self.layer1(input_vector))
+        x2 = F.relu(self.layer2(x1))  # linear result
+
+        i = ModelDQN.linear_batch_to_img(input_vector)
+        i2 = F.relu(self.bn1(self.conv1(i)))
+        # i3 = F.relu(self.bn2(self.conv2(i2)))
+        # i4 = F.relu(self.bn3(self.conv3(i3)))
+        i3 = i2.view(i2.size(0), -1)  # cnn result
+
+        joined = torch.cat([x2, i3], 1)
+
+        j = F.relu(self.layer3(joined))
+        j3 = F.relu(self.layer4(j))
+        j4 = self.layer5(j3)
+
+        return j4
+
+    @staticmethod
+    def linear_batch_to_img(linear_batch):
+        y = linear_batch.unsqueeze(1)
+        z = torch.split(y, 6, 2)
+        result = torch.stack(z, 2)
+        return result
 
     @staticmethod
     def Variable(tensor, volatile=False):
