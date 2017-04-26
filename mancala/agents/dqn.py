@@ -147,7 +147,8 @@ class TrainerDQN():
                 score_previous = game.score()
 
                 # Perform one step of the optimization (on the target network)
-                self._optimize_model()
+                if actions % 5 == 0:
+                    self._optimize_model()
 
         aps = actions / (time.time() - time_start)
         print(' :EOF {:.2f} action/second'.format(aps))
