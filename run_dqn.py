@@ -71,7 +71,7 @@ def train(epochs, path_output, path_input=None, verbose=True):
 
     for epoch in range(starting_epoch + 1, epochs):
         print(" Training Epoch {}".format(epoch))
-        trainer.train(4500, print_mod=500)
+        loss = trainer.train(4500, print_mod=500)
         trainer.write_state_to_path("{}.epoch.{:0>8}".format(path_output, epoch))
         trainer.write_state_to_path(path_output)
 
@@ -83,14 +83,16 @@ def train(epochs, path_output, path_input=None, verbose=True):
             lambda seed: AgentDQN(path_output, seed + epoch),
             lambda seed: AgentExact(seed + epoch),
             800)
-        msg = " Epoch {: >3} | VsRandom: {: >4}% | VsExact: {: >4}%".format(
+        msg = " Epoch {: >3} | VsRandom: {: >4}% | VsExact: {: >4}% | Loss: {: >4}".format(
             epoch,
             round(win_rate_v_random * 100, 2),
-            round(win_rate_v_exact * 100, 2)
+            round(win_rate_v_exact * 100, 2),
+            loss
         )
 
         log_value('win_rate_v_random', win_rate_v_random, epoch)
         log_value('win_rate_v_exact', win_rate_v_exact, epoch)
+        log_value('loss', loss, epoch)
 
         print(' ───── ' + datetime.datetime.now().strftime("%c") + ' ───── ')
         print(msg)

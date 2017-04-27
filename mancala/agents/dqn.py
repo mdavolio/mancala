@@ -106,6 +106,7 @@ class TrainerDQN():
     def train(self, num_episodes=10, agent=None, print_mod=1):
         self._run += 1
         actions = 0
+        loss = 0
         self._steps_done = 0
         time_start = time.time()
         agent = AgentExact(self._seed + self._run) if agent is None else agent
@@ -150,15 +151,16 @@ class TrainerDQN():
 
                 # Perform one step of the optimization (on the target network)
                 if actions % 5 == 0:
-                    self._optimize_model()
+                    loss += self._optimize_model()
 
         aps = actions / (time.time() - time_start)
         print(' :EOF {:.2f} action/second'.format(aps))
+        return loss / self._steps_done
 
     def _optimize_model(self):
 
         if not self._memory.full:
-            return
+            return 0
         (state_batch, action_batch, state_next_batch, reward_batch) = \
             self._memory.sample(self._BATCH_SIZE)
 
@@ -209,6 +211,7 @@ class TrainerDQN():
 
         # if self._memory.position % 200 == 0:
         #     print("Loss: ", loss.data[0])
+        current_loss = loss.data.cpu()[0]
 
         # Optimize the model
         self._optimizer.zero_grad()
@@ -216,6 +219,7 @@ class TrainerDQN():
         for param in self._model.parameters():
             param.grad.data.clamp_(-1, 1)
         self._optimizer.step()
+        return current_loss
 
     @staticmethod
     def game_to_state(game):
