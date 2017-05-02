@@ -95,3 +95,6 @@ arena.results.csv
 
 # Ignore most generated models
 models/*
+
+logs/*
+.vscode/*
