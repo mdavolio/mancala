@@ -24,7 +24,7 @@ class AgentA3C(Agent):
         self._seed = seed
         self._idx = 0
         self._dtype = dtype
-        self.env = MancalaEnv(AgentRandom(seed), seed)
+        self.env = MancalaEnv(seed)
         state = self.env.reset()
 
         self._model = ActorCritic(

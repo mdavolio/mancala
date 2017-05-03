@@ -21,7 +21,7 @@ def ensure_shared_grads(model, shared_model):
 def train(rank, args, shared_model, dtype):
     torch.manual_seed(args.seed + rank)
 
-    env = MancalaEnv(AgentExact(args.seed + rank), args.seed + rank)
+    env = MancalaEnv(args.seed + rank)
     env.seed(args.seed + rank)
     state = env.reset()
 

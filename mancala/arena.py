@@ -50,11 +50,14 @@ class Arena():
             game = Game()
             agent_one = (lambda_01)(seed + idx)
             agent_two = (lambda_02)(seed + idx)
+            # max_size = 0
             while not game.over():
                 if game.turn_player() == 1:
                     game.move(agent_one.move(game))
                 else:
                     game.move(agent_two.move(game))
+            #     max_size = max([max_size] + game.board())
+            # print("Max Size", max_size)
             if game.score()[0] > game.score()[1]:
                 wins = wins + 1
         return wins

@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
 
-    env = MancalaEnv(AgentRandom(args.seed), args.seed)
+    env = MancalaEnv(args.seed)
     state = env.reset()
     shared_model = ActorCritic(state.shape[0], env.action_space).type(dtype)
     if args.load_name is not None:

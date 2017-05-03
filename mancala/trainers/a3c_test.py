@@ -13,7 +13,7 @@ from tensorboard_logger import configure, log_value
 from mancala.env import MancalaEnv
 from mancala.agents.random import AgentRandom
 from mancala.agents.exact import AgentExact
-from mancala.agents.agent import Agent
+from mancala.agents.max_min import AgentMinMax
 from mancala.agents.a3c import AgentA3C
 from mancala.arena import Arena
 from mancala.trainers.a3c_model import ActorCritic
@@ -32,7 +32,7 @@ def test(rank, args, shared_model, dtype):
     run_name = args.save_name + '_' + timestring
     configure("logs/run_" + run_name, flush_secs=5)
 
-    env = MancalaEnv(AgentRandom(args.seed + rank), args.seed + rank)
+    env = MancalaEnv(args.seed + rank)
     env.seed(args.seed + rank)
     state = env.reset()
 
@@ -48,6 +48,7 @@ def test(rank, args, shared_model, dtype):
     done = True
 
     start_time = time.time()
+    last_test = time.time()
 
     episode_length = 0
     while True:
@@ -74,45 +75,60 @@ def test(rank, args, shared_model, dtype):
             rewards_recent.append(reward_sum)
             rewards_recent_avg = sum(rewards_recent) / len(rewards_recent)
             print(
-                "{} | Episode Reward {: >4}, Length {: >2} | Avg Reward {:0.2f}".format(
+                "{} | {} | Episode Reward {: >4}, Length {: >2} | Avg Reward {:0.2f}".format(
+                    datetime.datetime.now().isoformat(),
                     time.strftime("%Hh %Mm %Ss",
                                   time.gmtime(time.time() - start_time)),
-                    reward_sum, episode_length, rewards_recent_avg))
+                    round(reward_sum, 2),
+                    episode_length,
+                    round(rewards_recent_avg, 2))
+            )
 
             # if not stuck or args.evaluate:
             log_value('Reward', reward_sum, test_ctr)
             log_value('Reward Average', rewards_recent_avg, test_ctr)
             log_value('Episode length', episode_length, test_ctr)
 
-            if reward_sum >= max_reward:
-                # pickle.dump(shared_model.state_dict(), open(args.save_name + '_max' + '.p', 'wb'))
+            if reward_sum >= max_reward or time.time() - last_test > 60 * 15:
+                # if the reward is better or every 15 minutes
+                last_test = time.time()
+                max_reward = reward_sum
+
                 path_output = args.save_name + '_max'
                 torch.save(shared_model.state_dict(), path_output)
                 path_now = "{}_{}".format(
                     args.save_name, datetime.datetime.now().isoformat())
                 torch.save(shared_model.state_dict(), path_now)
-                max_reward = reward_sum
 
                 win_rate_v_random = Arena.compare_agents_float(
                     lambda seed: AgentA3C(path_output, dtype, seed),
                     lambda seed: AgentRandom(seed),
-                    800)
+                    400)
                 win_rate_v_exact = Arena.compare_agents_float(
                     lambda seed: AgentA3C(path_output, dtype, seed),
                     lambda seed: AgentExact(seed),
-                    800)
-                msg = " {} | VsRandom: {: >4}% | VsExact: {: >4}%".format(
+                    400)
+                win_rate_v_minmax = Arena.compare_agents_float(
+                    lambda seed: AgentA3C(path_output, dtype, seed),
+                    lambda seed: AgentMinMax(seed, 3),
+                    400)
+                msg = " {} | VsRandom: {: >4}% | VsExact: {: >4}% | VsMinMax: {: >4}%".format(
                     datetime.datetime.now().strftime("%c"),
                     round(win_rate_v_random * 100, 2),
-                    round(win_rate_v_exact * 100, 2)
+                    round(win_rate_v_exact * 100, 2),
+                    round(win_rate_v_minmax * 100, 2)
                 )
                 print(msg)
-                log_value('Win Rate vs Random', win_rate_v_random, test_ctr)
-                if win_rate_v_random > max_winrate:
-                    print("Found superior model at {}".format(datetime.datetime.now().isoformat()))
+                log_value('WinRate_Random', win_rate_v_random, test_ctr)
+                log_value('WinRate_Exact', win_rate_v_exact, test_ctr)
+                log_value('WinRate_MinMax', win_rate_v_minmax, test_ctr)
+                avg_win_rate = (win_rate_v_random + win_rate_v_exact + win_rate_v_minmax) / 3
+                if avg_win_rate > max_winrate:
+                    print("Found superior model at {}".format(
+                        datetime.datetime.now().isoformat()))
                     torch.save(shared_model.state_dict(), "{}_{}_best_{}".format(
-                        args.save_name, datetime.datetime.now().isoformat(), win_rate_v_random))
-                    max_winrate = win_rate_v_random
+                        args.save_name, datetime.datetime.now().isoformat(), avg_win_rate))
+                    max_winrate = avg_win_rate
 
             reward_sum = 0
             episode_length = 0
