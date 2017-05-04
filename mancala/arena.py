@@ -22,25 +22,22 @@ class Arena():
                  agents=None,
                  games_to_play=101,
                  seed=451):
-        print(agents)
         agents = [] if agents is None else agents
-        # names = ['opponent'] + [a[0] for a in agents]
         names = [a[0] for a in agents]
-        print(agents)
         self._names = names
-        print(names)
 
         data = [names]  # opponent names
         # data = [names]  # opponent names
         for primary in agents:
-            name_primary, lambda_primary = primary
+            _, lambda_primary = primary
             scores = []
             for opponent in agents:
-                name_opponent, lambda_opponent = opponent
-                print(" Testing {} vs {}".format(name_primary, name_opponent))
+                _, lambda_opponent = opponent
+                # print(" Testing {} vs {}".format(name_primary, name_opponent))
                 win_rate = Arena.compare_agents_float(
                     lambda_primary, lambda_opponent, games_to_play, seed)
-                print(" Testing {} vs {} -> {}%".format(name_primary, name_opponent, round(win_rate * 100, 2)))
+                # print(" Testing {} vs {} -> {}%".format(name_primary,
+                #                                         name_opponent, round(win_rate * 100, 2)))
                 scores.append(win_rate)
             data.append(scores)
 
