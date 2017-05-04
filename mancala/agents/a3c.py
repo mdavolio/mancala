@@ -8,7 +8,6 @@ from torch.autograd import Variable
 
 from mancala.game import Game
 from mancala.env import MancalaEnv
-from mancala.agents.random import AgentRandom
 from mancala.agents.agent import Agent
 from mancala.trainers.a3c_model import ActorCritic
 
