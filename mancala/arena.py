@@ -3,7 +3,6 @@
 Mancala Arena object
 """
 
-import itertools
 from mancala.game import Game
 
 
@@ -21,23 +20,35 @@ class Arena():
 
     def __init__(self,
                  agents=None,
-                 games_to_play=101):
-        self._agents = agents if agents is list else []
-        self._games_to_play = games_to_play
-        self._names = list(sorted(map(lambda t: t[0], agents)))
+                 games_to_play=101,
+                 seed=451):
+        print(agents)
+        agents = [] if agents is None else agents
+        # names = ['opponent'] + [a[0] for a in agents]
+        names = [a[0] for a in agents]
+        print(agents)
+        self._names = names
+        print(names)
 
-        # this ensures all agent pairs and pairs with themselves
-        combos = list(itertools.combinations(agents, 2)) + \
-            list(zip(agents, agents))
-        self._combos = sorted(combos, key=lambda t: t[0][0] + '_' + t[1][0])
-        self._results = list(map(lambda t: Arena._handle_combo(
-            t[1], games_to_play, t[0]), enumerate(self._combos)))
+        data = [names]  # opponent names
+        # data = [names]  # opponent names
+        for primary in agents:
+            name_primary, lambda_primary = primary
+            scores = []
+            for opponent in agents:
+                name_opponent, lambda_opponent = opponent
+                print(" Testing {} vs {}".format(name_primary, name_opponent))
+                win_rate = Arena.compare_agents_float(
+                    lambda_primary, lambda_opponent, games_to_play, seed)
+                print(" Testing {} vs {} -> {}%".format(name_primary, name_opponent, round(win_rate * 100, 2)))
+                scores.append(win_rate)
+            data.append(scores)
+
+        self._results = Arena._transpose(data)
 
     @staticmethod
-    def _handle_combo(combo, games_to_play, seed):
-        wins = Arena.compare_agents(
-            combo[0][1], combo[1][1], games_to_play, seed)
-        return (combo[0][0], combo[1][0], wins)
+    def _transpose(list_list):
+        return [list(i) for i in zip(*list_list)]
 
     @staticmethod
     def compare_agents(lambda_01, lambda_02, games_to_play=51, seed=451):
@@ -88,18 +99,7 @@ class Arena():
         List of Lists, corresponding to the player 2 results
         The first element is the opponent type
         """
-        return list(map(self._row_from_name, self._names))
-
-    def _row_from_name(self, name):
-        """Returns a row of results, each from the perspective of """
-        results_for_player_2 = list(
-            filter(lambda t: t[0] == name or t[1] == name, self._results))
-        results_fixed_for_row = list(map(lambda t: Arena._fix_for_row(
-            name, t, self._games_to_play), results_for_player_2))
-        results_ordered = list(
-            sorted(results_fixed_for_row, key=lambda t: t[0]))
-        results_final = list(map(lambda t: t[1], results_ordered))
-        return [name] + results_final
+        return self.results()
 
     @staticmethod
     def _fix_for_row(name, match_tuple, game_count):
