@@ -50,7 +50,8 @@ class AgentA3C(Agent):
         move_options = Agent.valid_indices(game_clone)
 
         if action_idx not in move_options:
-            return random.choice(move_options)
+            final_move = random.choice(move_options)
+        else:
+            final_move = action_idx
 
-        final_move = Game.rotate_board(rot_flag, action_idx)
-        return final_move
+        return Game.rotate_board(rot_flag, final_move)
