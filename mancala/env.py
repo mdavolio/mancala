@@ -25,7 +25,7 @@ class MancalaEnv(gym.Env):
                 AgentExact(seed),
                 AgentMinMax(seed, 3)
             ])
-            weights = np.array([1 / 20, 15 / 20, 14 / 20])
+            weights = np.array([1 / 20, 9 / 20, 10 / 20])
 
         self._agents = agents
         self._weights = weights / sum(weights)

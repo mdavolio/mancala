@@ -56,8 +56,8 @@ def test(rank, args, shared_model, dtype):
         # Sync with the shared model
         if done:
             model.load_state_dict(shared_model.state_dict())
-            cx = Variable(torch.zeros(1, 256).type(dtype), volatile=True)
-            hx = Variable(torch.zeros(1, 256).type(dtype), volatile=True)
+            cx = Variable(torch.zeros(1, 300).type(dtype), volatile=True)
+            hx = Variable(torch.zeros(1, 300).type(dtype), volatile=True)
         else:
             cx = Variable(cx.data.type(dtype), volatile=True)
             hx = Variable(hx.data.type(dtype), volatile=True)
@@ -89,10 +89,15 @@ def test(rank, args, shared_model, dtype):
             log_value('Reward Average', rewards_recent_avg, test_ctr)
             log_value('Episode length', episode_length, test_ctr)
 
-            if reward_sum >= max_reward or time.time() - last_test > 60 * 15:
-                # if the reward is better or every 15 minutes
+            if reward_sum >= max_reward or \
+                time.time() - last_test > 60 * 8 or \
+                (len(rewards_recent) > 12 and \
+                    time.time() - last_test > 60 * 2 and \
+                    sum(list(rewards_recent)[-5:]) > sum(list(rewards_recent)[-10:-5])):
+
+                    # if the reward is better or every 15 minutes
                 last_test = time.time()
-                max_reward = reward_sum
+                max_reward = reward_sum if reward_sum > max_reward else max_reward
 
                 path_output = args.save_name + '_max'
                 torch.save(shared_model.state_dict(), path_output)
@@ -122,7 +127,7 @@ def test(rank, args, shared_model, dtype):
                 log_value('WinRate_Random', win_rate_v_random, test_ctr)
                 log_value('WinRate_Exact', win_rate_v_exact, test_ctr)
                 log_value('WinRate_MinMax', win_rate_v_minmax, test_ctr)
-                avg_win_rate = (win_rate_v_random + win_rate_v_exact + win_rate_v_minmax) / 3
+                avg_win_rate = (win_rate_v_exact + win_rate_v_minmax) / 2
                 if avg_win_rate > max_winrate:
                     print("Found superior model at {}".format(
                         datetime.datetime.now().isoformat()))

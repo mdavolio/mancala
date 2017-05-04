@@ -23,13 +23,13 @@ class ActorCritic(torch.nn.Module):
 
     def __init__(self, num_inputs, action_space):
         super(ActorCritic, self).__init__()
-        self.linear1 = nn.Linear(num_inputs, 256)
+        self.linear1 = nn.Linear(num_inputs, 300)
 
-        self.lstm = nn.LSTMCell(256, 256)
+        self.lstm = nn.LSTMCell(300, 300)
 
         num_outputs = action_space.n
-        self.critic_linear = nn.Linear(256, 1)
-        self.actor_linear = nn.Linear(256, num_outputs)
+        self.critic_linear = nn.Linear(300, 1)
+        self.actor_linear = nn.Linear(300, num_outputs)
 
         self.apply(weights_init)
 

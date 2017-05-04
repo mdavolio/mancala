@@ -43,8 +43,8 @@ def train(rank, args, shared_model, dtype):
         # Sync with the shared model
         model.load_state_dict(shared_model.state_dict())
         if done:
-            cx = Variable(torch.zeros(1, 256).type(dtype))
-            hx = Variable(torch.zeros(1, 256).type(dtype))
+            cx = Variable(torch.zeros(1, 300).type(dtype))
+            hx = Variable(torch.zeros(1, 300).type(dtype))
         else:
             cx = Variable(cx.data.type(dtype))
             hx = Variable(hx.data.type(dtype))
