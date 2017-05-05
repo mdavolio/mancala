@@ -46,6 +46,12 @@ class Game():
         """Returns the current score of the game"""
         return Game.score_board(self._board)
 
+    def winner(self):
+        """Returns the winner player number, or 0 if the game isn't over"""
+        if not self.over():
+            return 0
+        return 1 if self.score()[0] > self.score()[1] else 2
+
     @staticmethod
     def score_board(board):
         """Scores a Mancala board"""

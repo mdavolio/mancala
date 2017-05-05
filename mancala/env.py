@@ -49,7 +49,7 @@ class MancalaEnv(gym.Env):
 
         self._game.move(action)
 
-        agent = self.np_random.choice(self._agents, 1, p=self._weights)[0]
+        agent = self._agent()
         while not self._game.over() and self._game.turn_player() == 2:
             move = agent.move(self._game)
             self._game.move(move)
@@ -68,8 +68,22 @@ class MancalaEnv(gym.Env):
         return state_new, reward, self._game.over(), {}
 
     def _reset(self):
-        self._game = Game()
+        game = Game()
+        self._game = game
+
+        if self.np_random.random_sample() > 0.5:
+            # play the first turn and flip the board
+            agent = self._agent()
+            while not game.over() and game.turn_player() != 2:
+                move = agent.move(game)
+                game.move(move)
+            self._game, _ = game.clone_turn()
+
         return MancalaEnv.game_state(self._game)
+
+    def _agent(self):
+        """Return a randomly selected opponent agent"""
+        return self.np_random.choice(self._agents, 1, p=self._weights)[0]
 
     def force(self, game):
         """Force the environment to a certain game state"""
