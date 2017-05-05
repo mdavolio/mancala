@@ -20,6 +20,7 @@ from mancala.trainers.a3c_model import ActorCritic
 
 
 evaluation_episodes = 100
+performance_games = 200
 
 
 def test(rank, args, shared_model, dtype):
@@ -108,26 +109,38 @@ def test(rank, args, shared_model, dtype):
                 win_rate_v_random = Arena.compare_agents_float(
                     lambda seed: AgentA3C(path_output, dtype, seed),
                     lambda seed: AgentRandom(seed),
-                    400)
+                    performance_games)
                 win_rate_v_exact = Arena.compare_agents_float(
                     lambda seed: AgentA3C(path_output, dtype, seed),
                     lambda seed: AgentExact(seed),
-                    400)
+                    performance_games)
                 win_rate_v_minmax = Arena.compare_agents_float(
                     lambda seed: AgentA3C(path_output, dtype, seed),
                     lambda seed: AgentMinMax(seed, 3),
-                    400)
-                msg = " {} | VsRandom: {: >4}% | VsExact: {: >4}% | VsMinMax: {: >4}%".format(
+                    performance_games)
+                win_rate_exact_v = 1 - Arena.compare_agents_float(
+                    lambda seed: AgentExact(seed),
+                    lambda seed: AgentA3C(path_output, dtype, seed),
+                    performance_games)
+                win_rate_minmax_v = 1 - Arena.compare_agents_float(
+                    lambda seed: AgentMinMax(seed, 3),
+                    lambda seed: AgentA3C(path_output, dtype, seed),
+                    performance_games)
+                msg = " {} | VsRandom: {: >5}% | VsExact: {: >5}%/{: >5}% | VsMinMax: {: >5}%/{: >5}%".format(
                     datetime.datetime.now().strftime("%c"),
                     round(win_rate_v_random * 100, 2),
                     round(win_rate_v_exact * 100, 2),
-                    round(win_rate_v_minmax * 100, 2)
+                    round(win_rate_exact_v * 100, 2),
+                    round(win_rate_v_minmax * 100, 2),
+                    round(win_rate_minmax_v * 100, 2)
                 )
                 print(msg)
                 log_value('WinRate_Random', win_rate_v_random, test_ctr)
                 log_value('WinRate_Exact', win_rate_v_exact, test_ctr)
                 log_value('WinRate_MinMax', win_rate_v_minmax, test_ctr)
-                avg_win_rate = (win_rate_v_exact + win_rate_v_minmax) / 2
+                log_value('WinRate_ExactP2', win_rate_exact_v, test_ctr)
+                log_value('WinRate_MinMaxP2', win_rate_minmax_v, test_ctr)
+                avg_win_rate = (win_rate_v_exact + win_rate_v_minmax + win_rate_exact_v + win_rate_minmax_v) / 4
                 if avg_win_rate > max_winrate:
                     print("Found superior model at {}".format(
                         datetime.datetime.now().isoformat()))
