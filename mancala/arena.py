@@ -36,8 +36,8 @@ class Arena():
                 # print(" Testing {} vs {}".format(name_primary, name_opponent))
                 win_rate = Arena.compare_agents_float(
                     lambda_primary, lambda_opponent, games_to_play, seed)
-                print(" Testing {} vs {} -> {}%".format(name_primary,
-                                                        name_opponent, round(win_rate * 100, 2)))
+                # print(" Testing {} vs {} -> {}%".format(name_primary,
+                #                                         name_opponent, round(win_rate * 100, 2)))
                 scores.append(win_rate)
             data.append(scores)
 
