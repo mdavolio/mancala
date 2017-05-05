@@ -23,13 +23,15 @@ class ActorCritic(torch.nn.Module):
 
     def __init__(self, num_inputs, action_space):
         super(ActorCritic, self).__init__()
-        self.linear1 = nn.Linear(num_inputs, 300)
+        self.linear1 = nn.Linear(num_inputs, 512)
+        self.linear1_dropout = nn.Dropout(p=0.2)
+        self.linear2 = nn.Linear(512, 400)
 
-        self.lstm = nn.LSTMCell(300, 300)
+        self.lstm = nn.LSTMCell(400, 400)
 
         num_outputs = action_space.n
-        self.critic_linear = nn.Linear(300, 1)
-        self.actor_linear = nn.Linear(300, num_outputs)
+        self.critic_linear = nn.Linear(400, 1)
+        self.actor_linear = nn.Linear(400, num_outputs)
 
         self.apply(weights_init)
 
@@ -37,7 +39,8 @@ class ActorCritic(torch.nn.Module):
 
     def forward(self, inputs):
         inputs, (hx, cx) = inputs
-        x = F.elu(self.linear1(inputs))
+        y = F.elu(self.linear1_dropout(self.linear1(inputs)))
+        x = F.elu(self.linear2(y))
 
         hx, cx = self.lstm(x, (hx, cx))
 

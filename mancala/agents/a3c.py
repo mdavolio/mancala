@@ -39,8 +39,8 @@ class AgentA3C(Agent):
 
         state = self.env.force(game_clone)
         state = torch.from_numpy(state).type(self._dtype)
-        cx = Variable(torch.zeros(1, 300).type(self._dtype), volatile=True)
-        hx = Variable(torch.zeros(1, 300).type(self._dtype), volatile=True)
+        cx = Variable(torch.zeros(1, 400).type(self._dtype), volatile=True)
+        hx = Variable(torch.zeros(1, 400).type(self._dtype), volatile=True)
 
         _, logit, (hx, cx) = self._model(
             (Variable(state.unsqueeze(0), volatile=True), (hx, cx)))

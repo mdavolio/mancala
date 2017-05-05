@@ -56,8 +56,8 @@ def test(rank, args, shared_model, dtype):
         # Sync with the shared model
         if done:
             model.load_state_dict(shared_model.state_dict())
-            cx = Variable(torch.zeros(1, 300).type(dtype), volatile=True)
-            hx = Variable(torch.zeros(1, 300).type(dtype), volatile=True)
+            cx = Variable(torch.zeros(1, 400).type(dtype), volatile=True)
+            hx = Variable(torch.zeros(1, 400).type(dtype), volatile=True)
         else:
             cx = Variable(cx.data.type(dtype), volatile=True)
             hx = Variable(hx.data.type(dtype), volatile=True)
