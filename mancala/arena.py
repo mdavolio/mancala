@@ -29,15 +29,15 @@ class Arena():
         data = [names]  # opponent names
         # data = [names]  # opponent names
         for primary in agents:
-            _, lambda_primary = primary
+            name_primary, lambda_primary = primary
             scores = []
             for opponent in agents:
-                _, lambda_opponent = opponent
+                name_opponent, lambda_opponent = opponent
                 # print(" Testing {} vs {}".format(name_primary, name_opponent))
                 win_rate = Arena.compare_agents_float(
                     lambda_primary, lambda_opponent, games_to_play, seed)
-                # print(" Testing {} vs {} -> {}%".format(name_primary,
-                #                                         name_opponent, round(win_rate * 100, 2)))
+                print(" Testing {} vs {} -> {}%".format(name_primary,
+                                                        name_opponent, round(win_rate * 100, 2)))
                 scores.append(win_rate)
             data.append(scores)
 

@@ -15,7 +15,8 @@ try:
     import torch
     from mancala.agents.a3c import AgentA3C
     dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
-    AGENT_A3C = ("A3C", lambda seed: AgentA3C(os.path.join("models", "a3c.model"), dtype, seed))
+    AGENT_A3C = ("A3C", lambda seed: AgentA3C(
+        os.path.join("models", "a3c.model"), dtype, seed))
 except ImportError:
     AGENT_A3C = None
 
@@ -36,7 +37,7 @@ agents = [
     # second is a lambda that ONLY takes a random seed. This can be discarded
     # if the the Agent does not require a seed
     ("Random", lambda seed: AgentRandom(seed)),
-    ('MinMax', lambda seed: AgentMinMax(seed, depth = 3)),
+    ('MinMax', lambda seed: AgentMinMax(seed, depth=3)),
     ('Max', lambda seed: AgentMax(seed)),
     ('Exact', lambda seed: AgentExact(seed))
 ]

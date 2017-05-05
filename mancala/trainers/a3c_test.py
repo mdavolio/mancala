@@ -126,7 +126,7 @@ def test(rank, args, shared_model, dtype):
                     lambda seed: AgentMinMax(seed, 3),
                     lambda seed: AgentA3C(path_output, dtype, seed),
                     performance_games)
-                msg = " {} | VsRandom: {: >5}% | VsExact: {: >5}%/{: >5}% | VsMinMax: {: >5}%/{: >5}%".format(
+                msg = " {} | Random: {: >5}% | Exact: {: >5}%/{: >5}% | MinMax: {: >5}%/{: >5}%".format(
                     datetime.datetime.now().strftime("%c"),
                     round(win_rate_v_random * 100, 2),
                     round(win_rate_v_exact * 100, 2),
