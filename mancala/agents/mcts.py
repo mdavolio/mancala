@@ -17,11 +17,11 @@ from .exact import AgentExact
 class AgentMCTS(Agent):
     """Agent which picks a move by the next score"""
 
-    def __init__(self, seed=451, depth=4, iteration=3):
+    def __init__(self, seed=451, depth=4, iterations=3):
         self._seed = seed
         self._idx = 0
         self._depth = depth
-        self._iteration = iteration
+        self._iterations = iterations
     
     @staticmethod
     def basemove(game):
@@ -73,7 +73,7 @@ class AgentMCTS(Agent):
         alpha = -sys.maxsize
         move_dict = {}
 
-        for _ in range(self._iteration):
+        for _ in range(self._iterations):
             _,move_dict = AgentMCTS.explore(game_clone, move_dict, self._depth)
         
         move_options = Agent.valid_indices(game_clone)

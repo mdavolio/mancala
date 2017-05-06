@@ -7,6 +7,7 @@ from mancala.agents.random import AgentRandom
 from mancala.agents.max_min import AgentMinMax
 from mancala.agents.max import AgentMax
 from mancala.agents.exact import AgentExact
+from mancala.agents.mcts import AgentMCTS
 from mancala.arena import Arena
 
 
@@ -39,7 +40,8 @@ agents = [
     ("Random", lambda seed: AgentRandom(seed)),
     ('Max', lambda seed: AgentMax(seed)),
     ('Exact', lambda seed: AgentExact(seed)),
-    ('MinMax', lambda seed: AgentMinMax(seed, depth=3))
+    ('MinMax', lambda seed: AgentMinMax(seed, depth=3)),
+    ('MCTS', lambda seed: AgentMCTS(seed, depth=3, iterations=500))
 ]
 if AGENT_A3C is not None:
     agents.append(AGENT_A3C)
