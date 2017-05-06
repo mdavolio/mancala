@@ -13,6 +13,7 @@ from mancala.agents.random import AgentRandom
 from mancala.agents.max import AgentMax
 from mancala.agents.max_min import AgentMinMax
 from mancala.agents.exact import AgentExact
+from mancala.agents.mcts import AgentMCTS
 
 # Create an A3C Agent if pytorch is available in any form
 try:
@@ -31,6 +32,7 @@ AGENT_RANDOM = AgentRandom(454)
 AGENT_MAX = AgentMax(454)
 AGENT_MINNY = AgentMinMax(454, 3)
 AGENT_EXACT = AgentExact(454)
+AGENT_MCTS = AgentMCTS(454, 3, 500)
 
 
 def board_str_to_game(board, player_turn):
@@ -57,6 +59,8 @@ def agent_play(game, agent_str):
         game.move(AGENT_MINNY.move(game))
     elif agent_str == 'exact':
         game.move(AGENT_EXACT.move(game))
+    elif agent_str =='mcts':
+        game.move(AGENT_MCTS.move(game))
     return game
 
 
@@ -69,7 +73,7 @@ def time():
 @FLASKAPP.route('/agents')
 def agents():
     """Returns available agent strings"""
-    agents = ['random', 'max', 'min_max', 'exact']
+    agents = ['random', 'max', 'min_max', 'exact', 'mcts']
     if AGENT_A3C is not None:
         agents.append('a3c')
     return jsonify({'agents': agents})
