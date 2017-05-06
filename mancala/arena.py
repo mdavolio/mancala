@@ -3,7 +3,6 @@
 Mancala Arena object
 """
 
-import itertools
 from mancala.game import Game
 
 
@@ -21,33 +20,64 @@ class Arena():
 
     def __init__(self,
                  agents=None,
-                 games_to_play=101):
-        self._agents = agents if agents is list else []
-        self._games_to_play = games_to_play
-        self._names = list(sorted(map(lambda t: t[0], agents)))
+                 games_to_play=101,
+                 seed=451):
+        agents = [] if agents is None else agents
+        names = [a[0] for a in agents]
+        self._names = names
 
-        # this ensures all agent pairs and pairs with themselves
-        combos = list(itertools.combinations(agents, 2)) + \
-            list(zip(agents, agents))
-        self._combos = sorted(combos, key=lambda t: t[0][0] + '_' + t[1][0])
-        self._results = list(map(lambda t: Arena._handle_combo(
-            t[1], t[0], games_to_play), enumerate(self._combos)))
+        data = [names]  # opponent names
+        # data = [names]  # opponent names
+        for primary in agents:
+            name_primary, lambda_primary = primary
+            scores = []
+            for opponent in agents:
+                name_opponent, lambda_opponent = opponent
+                # print(" Testing {} vs {}".format(name_primary, name_opponent))
+                win_rate = Arena.compare_agents_float(
+                    lambda_primary, lambda_opponent, games_to_play, seed)
+                # print(" Testing {} vs {} -> {}%".format(name_primary,
+                #                                         name_opponent, round(win_rate * 100, 2)))
+                scores.append(win_rate)
+            data.append(scores)
+
+        self._results = Arena._transpose(data)
 
     @staticmethod
-    def _handle_combo(combo, seed, games_to_play):
+    def _transpose(list_list):
+        return [list(i) for i in zip(*list_list)]
+
+    @staticmethod
+    def compare_agents(lambda_01, lambda_02, games_to_play=51, seed=451):
+        """
+        Returns number of times agent created from lambda_01
+        wins over agent created from lambda_02
+        """
         wins = 0
-        for idx in range(0, games_to_play):
+        for idx in range(games_to_play):
             game = Game()
-            agent_one = (combo[0][1])(seed + idx)
-            agent_two = (combo[1][1])(seed + idx)
+            agent_one = (lambda_01)(seed + idx)
+            agent_two = (lambda_02)(seed + idx)
+            # max_size = 0
             while not game.over():
                 if game.turn_player() == 1:
                     game.move(agent_one.move(game))
                 else:
                     game.move(agent_two.move(game))
+            #     max_size = max([max_size] + game.board())
+            # print("Max Size", max_size)
             if game.score()[0] > game.score()[1]:
                 wins = wins + 1
-        return (combo[0][0], combo[1][0], wins)
+        return wins
+
+    @staticmethod
+    def compare_agents_float(lambda_01, lambda_02, games_to_play=51, seed=451):
+        """
+        Returns fraction of times agent created from lambda_01
+        wins over agent created from lambda_02
+        """
+        wins = Arena.compare_agents(lambda_01, lambda_02, games_to_play, seed)
+        return wins / games_to_play
 
     def names(self):
         """Sorted names of agents"""
@@ -66,18 +96,7 @@ class Arena():
         List of Lists, corresponding to the player 2 results
         The first element is the opponent type
         """
-        return list(map(self._row_from_name, self._names))
-
-    def _row_from_name(self, name):
-        """Returns a row of results, each from the perspective of """
-        results_for_player_2 = list(
-            filter(lambda t: t[0] == name or t[1] == name, self._results))
-        results_fixed_for_row = list(map(lambda t: Arena._fix_for_row(
-            name, t, self._games_to_play), results_for_player_2))
-        results_ordered = list(
-            sorted(results_fixed_for_row, key=lambda t: t[0]))
-        results_final = list(map(lambda t: t[1], results_ordered))
-        return [name] + results_final
+        return self.results()
 
     @staticmethod
     def _fix_for_row(name, match_tuple, game_count):

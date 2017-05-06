@@ -1,4 +1,5 @@
 
+import os
 import argparse
 import csv
 
@@ -7,6 +8,17 @@ from mancala.agents.max_min import AgentMinMax
 from mancala.agents.max import AgentMax
 from mancala.agents.exact import AgentExact
 from mancala.arena import Arena
+
+
+# Create an A3C Agent if pytorch is available in any form
+try:
+    import torch
+    from mancala.agents.a3c import AgentA3C
+    dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
+    AGENT_A3C = ("A3C", lambda seed: AgentA3C(
+        os.path.join("models", "a3c.model"), dtype, seed))
+except ImportError:
+    AGENT_A3C = None
 
 
 PARSER = argparse.ArgumentParser(
@@ -19,16 +31,20 @@ ARGS = PARSER.parse_args()
 
 print('Starting arena')
 
-ARENA = Arena([
+agents = [
     # Place agents in this list as created
     # first in the tuple is the readable name
     # second is a lambda that ONLY takes a random seed. This can be discarded
     # if the the Agent does not require a seed
     ("Random", lambda seed: AgentRandom(seed)),
-    ('Minny', lambda seed: AgentMinMax(seed, depth = 3))
     ('Max', lambda seed: AgentMax(seed)),
-    ('Exact', lmabda seed: AgentExact(seed))
-], 500)
+    ('Exact', lambda seed: AgentExact(seed)),
+    ('MinMax', lambda seed: AgentMinMax(seed, depth=3))
+]
+if AGENT_A3C is not None:
+    agents.append(AGENT_A3C)
+
+ARENA = Arena(agents, 500)
 
 
 print('Run the arena for: ', ARENA.csv_header())

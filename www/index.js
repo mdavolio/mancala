@@ -5,7 +5,6 @@ const reset_state = () => {
   player_turn = 1;
 }
 
-const player_types = { 'human': { url: '' }, 'random': { url: '' }, 'max': { url: '' },'exact': { url: '' }, 'min_max':{ url: '' } };
 const players = ['one', 'two'];
 var player_states = ['human', 'human'];
 
@@ -34,7 +33,7 @@ const count_down_progress = (player, agent) => {
 
 const generate_inputs = (player, types) => {
   return R.pipe(
-    R.mapObjIndexed((val, type) =>
+    R.map(type =>
       `<div class="pure-g">
          <div class="pure-u-1-6 center">
             <input id="option-${player}-${type}"
@@ -58,9 +57,6 @@ const generate_inputs = (player, types) => {
   )(types);
 };
 
-R.map((player) => {
-  $(`#player_${player}_choices`).html(generate_inputs(player, player_types));
-}, players);
 
 var latest_url = '';
 const fetch = (url) => {
@@ -175,7 +171,6 @@ const render_cell = R.pipe(
 );
 const cell_from_id = i => $(`#cell-${i_to_str(i)}`);
 const render_board = (board) => over_cells(i => cell_from_id(i).html(render_cell(board[i])));
-over_cells(i => cell_from_id(i).on('touchstart click', evt => cell_click(i)));
 
 
 const kick_again = (again) => {
@@ -215,5 +210,15 @@ const restart_game = () => {
   kick_turn();
 }
 
-render_board(board_current);
-render_player({ game_over: false, player_turn });
+fetch("/agents")
+  .then((agents_available) => {
+    console.log(agents_available);
+    const agents = R.concat(['human'], agents_available.agents);
+
+    R.map((player) => {
+      $(`#player_${player}_choices`).html(generate_inputs(player, agents));
+    }, players);
+    over_cells(i => cell_from_id(i).on('touchstart click', evt => cell_click(i)));
+    render_board(board_current);
+    render_player({ game_over: false, player_turn });
+  })
