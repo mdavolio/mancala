@@ -6,6 +6,9 @@ import torch
 import torch.nn.functional as F
 from torch.autograd import Variable
 
+import numpy as np
+from gym.utils import seeding
+
 from mancala.game import Game
 from mancala.env import MancalaEnv
 from mancala.agents.agent import Agent
@@ -21,6 +24,7 @@ class AgentA3C(Agent):
                  seed=451):
         self._seed = seed
         self._idx = 0
+        self.np_random, _ = seeding.np_random(seed)
         self._dtype = dtype
         self.env = MancalaEnv(seed)
         state = self.env.reset()
@@ -46,7 +50,10 @@ class AgentA3C(Agent):
         prob = F.softmax(logit)
         scores = [(action, score) for action, score in enumerate(
             prob[0].data.tolist()) if action in move_options]
-        scores_sorted = sorted(scores, key=lambda t: t[1], reverse=True)
-        final_move = scores_sorted[0][0]
+
+        valid_actions = [action for action, _ in scores]
+        valid_scores = np.array([score for _, score in scores])
+
+        final_move = self.np_random.choice(valid_actions, 1, p=valid_scores/valid_scores.sum())[0]
 
         return Game.rotate_board(rot_flag, final_move)

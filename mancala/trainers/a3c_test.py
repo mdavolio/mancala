@@ -8,6 +8,9 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.autograd import Variable
 
+import numpy as np
+from gym.utils import seeding
+
 from tensorboard_logger import configure, log_value
 
 from mancala.env import MancalaEnv
@@ -35,6 +38,7 @@ def test(rank, args, shared_model, dtype):
 
     env = MancalaEnv(args.seed + rank)
     env.seed(args.seed + rank)
+    np_random, _ = seeding.np_random(args.seed + rank)
     state = env.reset()
 
     model = ActorCritic(state.shape[0], env.action_space).type(dtype)
@@ -68,7 +72,16 @@ def test(rank, args, shared_model, dtype):
         prob = F.softmax(logit)
         action = prob.max(1)[1].data.cpu().numpy()
 
-        state, reward, done, _ = env.step(action[0, 0])
+        scores = [(action, score) for action, score in enumerate(
+            prob[0].data.tolist())]
+
+        valid_actions = [action for action, _ in scores]
+        valid_scores = np.array([score for _, score in scores])
+
+        final_move = np_random.choice(
+            valid_actions, 1, p=valid_scores / valid_scores.sum())[0]
+
+        state, reward, done, _ = env.step(final_move)
         done = done or episode_length >= args.max_episode_length
         reward_sum += reward
 
@@ -92,8 +105,8 @@ def test(rank, args, shared_model, dtype):
 
             if reward_sum >= max_reward or \
                 time.time() - last_test > 60 * 8 or \
-                (len(rewards_recent) > 12 and \
-                    time.time() - last_test > 60 * 2 and \
+                (len(rewards_recent) > 12 and
+                    time.time() - last_test > 60 * 2 and
                     sum(list(rewards_recent)[-5:]) > sum(list(rewards_recent)[-10:-5])):
 
                     # if the reward is better or every 15 minutes
@@ -140,7 +153,8 @@ def test(rank, args, shared_model, dtype):
                 log_value('WinRate_MinMax', win_rate_v_minmax, test_ctr)
                 log_value('WinRate_ExactP2', win_rate_exact_v, test_ctr)
                 log_value('WinRate_MinMaxP2', win_rate_minmax_v, test_ctr)
-                avg_win_rate = (win_rate_v_exact + win_rate_v_minmax + win_rate_exact_v + win_rate_minmax_v) / 4
+                avg_win_rate = (win_rate_v_exact + win_rate_v_minmax +
+                                win_rate_exact_v + win_rate_minmax_v) / 4
                 if avg_win_rate > max_winrate:
                     print("Found superior model at {}".format(
                         datetime.datetime.now().isoformat()))
