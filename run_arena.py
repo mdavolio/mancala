@@ -37,9 +37,9 @@ agents = [
     # second is a lambda that ONLY takes a random seed. This can be discarded
     # if the the Agent does not require a seed
     ("Random", lambda seed: AgentRandom(seed)),
-    ('MinMax', lambda seed: AgentMinMax(seed, depth=3)),
     ('Max', lambda seed: AgentMax(seed)),
-    ('Exact', lambda seed: AgentExact(seed))
+    ('Exact', lambda seed: AgentExact(seed)),
+    ('MinMax', lambda seed: AgentMinMax(seed, depth=3))
 ]
 if AGENT_A3C is not None:
     agents.append(AGENT_A3C)
