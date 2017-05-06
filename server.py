@@ -14,6 +14,15 @@ from mancala.agents.max import AgentMax
 from mancala.agents.max_min import AgentMinMax
 from mancala.agents.exact import AgentExact
 
+# Create an A3C Agent if pytorch is available in any form
+try:
+    import torch
+    from mancala.agents.a3c import AgentA3C
+    dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
+    AGENT_A3C = AgentA3C(os.path.join("models", "a3c.model"), dtype, 454)
+except ImportError:
+    AGENT_A3C = None
+
 FLASKAPP = Flask(__name__)
 FLASKAPP.config.from_object(__name__)
 
@@ -22,6 +31,7 @@ AGENT_RANDOM = AgentRandom(454)
 AGENT_MAX = AgentMax(454)
 AGENT_MINNY = AgentMinMax(454, 3)
 AGENT_EXACT = AgentExact(454)
+
 
 def board_str_to_game(board, player_turn):
     """Turns parameters into game or error tuple"""
@@ -54,6 +64,15 @@ def agent_play(game, agent_str):
 def time():
     """Returns current time"""
     return jsonify({'current_time': datetime.datetime.utcnow().isoformat()})
+
+
+@FLASKAPP.route('/agents')
+def agents():
+    """Returns available agent strings"""
+    agents = ['random', 'max', 'min_max', 'exact']
+    if AGENT_A3C is not None:
+        agents.append('a3c')
+    return jsonify({'agents': agents})
 
 
 @FLASKAPP.route('/play/<string:board>/<int:player_turn>/<int:move>')
@@ -102,10 +121,12 @@ def serve_index():
     full_path = os.path.join(os.getcwd(), 'www')
     return send_from_directory(full_path, 'index.html')
 
+
 @FLASKAPP.route('/<path:filename>')
 def serve_static(filename):
     """Serve static files"""
     full_path = os.path.join(os.getcwd(), 'www')
     return send_from_directory(full_path, filename)
+
 
 FLASKAPP.run()
