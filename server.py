@@ -22,6 +22,10 @@ try:
     AGENT_A3C = AgentA3C(os.path.join("models", "a3c.model"), dtype, 454)
 except ImportError:
     AGENT_A3C = None
+except:
+    print("Unable to load A3C")
+    AGENT_A3C = None
+
 
 FLASKAPP = Flask(__name__)
 FLASKAPP.config.from_object(__name__)
