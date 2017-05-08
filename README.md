@@ -5,6 +5,15 @@ Simulator and Agents for the game of [Mancala](https://en.wikipedia.org/wiki/Man
 
 This project implements the game logic, multiple interfaces, and a variety of AI bots.
 
+## Game Play
+Players can choose any hole located on their side of the board. Stones are then dropped into following cells, however skipping the opponent's score cell. Game ends when a player scores 25 or more points.
+
+### Moving Again Rule
+If the last stone dropped lands in the score cell, the player moves again.
+
+### Capturing Rule
+If the last stone ends in an empty cell on the current player's side, if there are any stones in the adjacent cell on the opponent's side, these stones are captured for the current player. 
+
 ## Agents
 
 | Agent  | Description                                                |
