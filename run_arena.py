@@ -13,12 +13,16 @@ from mancala.arena import Arena
 # Create an A3C Agent if pytorch is available in any form
 try:
     import torch
+    from mancala.agents.hybrid import AgentHybrid
     from mancala.agents.a3c import AgentA3C
     dtype = torch.cuda.FloatTensor if torch.cuda.is_available() else torch.FloatTensor
     AGENT_A3C = ("A3C", lambda seed: AgentA3C(
         os.path.join("models", "a3c.model"), dtype, seed))
+    AGENT_HYBRID = ("Hybrid", lambda seed: AgentHybrid(
+        os.path.join("models", "a3c.model"), dtype, seed))
 except ImportError:
     AGENT_A3C = None
+    AGENT_HYBRID = None
 
 
 PARSER = argparse.ArgumentParser(
@@ -43,8 +47,9 @@ agents = [
 ]
 if AGENT_A3C is not None:
     agents.append(AGENT_A3C)
+    agents.append(AGENT_HYBRID)
 
-ARENA = Arena(agents, 500)
+ARENA = Arena(agents, 50)
 
 
 print('Run the arena for: ', ARENA.csv_header())
