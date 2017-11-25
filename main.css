@@ -1,0 +1,100 @@
+#title {
+  font-size: 2em;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+p.box {
+  height: 15vh;
+  padding-top: 15vh;
+  text-align: center;
+  border-radius: 25px;
+  border: 2px solid grey;
+  margin: 1vh;
+  padding: 20px;
+  word-wrap: break-word;
+  font-size: 90%;
+}
+
+p.player_one {
+  background-image: radial-gradient(rgba(222, 222, 222, 0), rgba(33, 174, 255, 0.53) 96%);
+}
+
+p.player_two {
+  background-image: radial-gradient(rgba(222, 222, 222, 0), rgba(255, 0, 0, 0.53) 96%);
+}
+
+p.player_turn {
+  outline: none;
+  height: 12vh;
+  padding-top: 13.5vh;
+  font-size: 170%;
+  font-weight: bold;
+  margin: 0;
+}
+
+p.hide {
+  visibility: hidden;
+}
+
+div.control-box {
+  height: 98vh;
+  overflow: scroll;
+}
+
+.player_box {
+  outline: 1px grey solid;
+}
+.player_one_text {
+  color: rgba(33, 174, 255, 0.93);
+}
+.player_two_text {
+  color: rgba(255, 0, 0, 0.93);
+}
+
+div.form-wrapper {
+  padding: 0.5em;
+}
+
+h4 {
+  margin-top: 0.2em;
+  margin-bottom: 0.05em;
+}
+
+p.player-label {
+  margin: 0.2em;
+}
+
+.progress-container {
+  padding-top: 0.25em;
+}
+div.progress-bar {
+  background: #ff7b00;
+  width: 0%;
+  height: 1em;
+  border-radius: 0.4em;
+}
+
+.game {
+    background-image: url(http://img09.deviantart.net/6b2f/i/2011/058/9/e/plain_wood_texture_by_goodtextures-d3aio41.jpg);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+}
+
+.upper {
+    border-top-left-radius: 25%;
+    border-top-right-radius: 25%;
+}
+
+.lower {
+    border-bottom-right-radius: 25%;
+    border-bottom-left-radius: 25%;
+}
+
+input#agent_speed {
+  width: 90%;
+}
+
+.center {
+  text-align: center;
+}

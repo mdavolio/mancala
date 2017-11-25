@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <title>Mancala</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <link rel="stylesheet" href="main.css">
+  <link rel="stylesheet" href="https://unpkg.com/purecss@0.6.2/build/pure-min.css" integrity="sha384-UQiGfs9ICog+LwheBSRCt1o5cbyKIHbwjWscjemyBMT9YCUMZffs6UqUTd0hObXD"
+    crossorigin="anonymous">
+</head>
+
+<body>
+  <div class="pure-g">
+    <div class="pure-u-2-3">
+      <!-- Game Board -->
+      <div class="pure-g game upper">
+        <!-- Upper Row -->
+        <div class="pure-u-1-8">
+          <p class="box hide">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_one" id="cell-00">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_one" id="cell-01">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_one" id="cell-02">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_one" id="cell-03">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_one" id="cell-04">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_one" id="cell-05">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box hide">?</p>
+        </div>
+      </div>
+      <!-- Upper Row -->
+
+      <div class="pure-g game mid">
+        <!-- Mid Row -->
+        <div class="pure-u-1-8">
+          <p class="box player_two" id="cell-13">?</p>
+        </div>
+        <div class="pure-u-3-4">
+          <p class="player_turn center" id="player_turn">Player Turn</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_one" id="cell-06">?</p>
+        </div>
+      </div>
+      <!-- Mid Row -->
+
+      <div class="pure-g game lower">
+        <!-- Lower Row -->
+        <div class="pure-u-1-8">
+          <p class="box hide">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_two" id="cell-12">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_two" id="cell-11">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_two" id="cell-10">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_two" id="cell-09">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_two" id="cell-08">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box player_two" id="cell-07">?</p>
+        </div>
+        <div class="pure-u-1-8">
+          <p class="box hide">?</p>
+        </div>
+      </div>
+      <!-- Lower Row -->
+
+    </div>
+    <!-- Game Board -->
+    <div class="pure-u-1-3">
+      <div class="control-box">
+        <p id="server-message"></p>
+
+        <form class="pure-form center">
+          <fieldset>
+            <legend id="title">Play Mancala!</legend>
+            <label for="agent_speed">
+              Agent Speed
+              <input id="agent_speed" type="range" min="0" max="495" step="1" value="250"/>
+            </label>
+
+            <button class="pure-button pure-button-primary" id="btn-restart-game">Restart Game</button>
+
+            <label for="auto-restart">
+              <input id="auto-restart" type="checkbox"> Auto-Restart
+            </label>
+          </fieldset>
+        </form>
+
+        <div class="pure-g">
+          <div class="pure-u-1-2 player_box">
+            <h2 class="center player_one_text">Player One</h2>
+            <h2 class="center"><span id="player_one_score">0</span></h2>
+            <div class="form-wrapper">
+              <form class="pure-form" id="player_one_choices">
+              </form>
+            </div>
+
+          </div>
+
+          <div class="pure-u-1-2 player_box">
+            <h2 class="center player_two_text">Player Two</h2>
+            <h2 class="center"><span id="player_two_score">0</span></h2>
+            <div class="form-wrapper">
+              <form class="pure-form" id="player_two_choices">
+              </form>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/bluebird/3.4.7/bluebird.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/ramda/0.23.0/ramda.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/velocity/1.4.3/velocity.min.js"></script>
+  <script src="index.js"></script>
+
+</body>
+
+</html>
